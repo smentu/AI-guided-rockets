@@ -45,7 +45,7 @@ public class RocketControl : MonoBehaviour
     {
         if (Input.GetKey(thrustKey))
         {
-            Debug.Log("applying thrust");
+            // Debug.Log("applying thrust");
             gameObject.GetComponent<Rigidbody>().AddForceAtPosition(ThrustPoint.transform.up, ThrustPoint.transform.position, ForceMode.VelocityChange);
             //ThrustPoint.GetComponent<Rigidbody>().AddForce(ThrustPoint.transform.forward, ForceMode.VelocityChange);
         }
