@@ -1,6 +1,5 @@
 ﻿using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ArenaControl : MonoBehaviour
 {
@@ -48,22 +47,19 @@ public class ArenaControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //distanceToTarget = Vector3.Distance(player.transform.position, target.transform.position);
-        
-
         if (target.GetComponent<TargetCollision>().Collected())
         {
             Destroy(target.gameObject);
             // currentReward = 10.0f;
-
             Reset();
         }
         else
         {
             currentReward = ((originalDistance - distanceToTarget()) / originalDistance);
+            player.GetComponent<RocketControl>().CollectTargetLocation(target.transform.position);
+            rewardText.GetComponent<TextMeshProUGUI>().text = currentReward.ToString("0.00");
         }
 
-        rewardText.GetComponent<TextMeshProUGUI>().text = currentReward.ToString("0.00");
 
     }
 
@@ -80,6 +76,7 @@ public class ArenaControl : MonoBehaviour
         player.transform.rotation = playerOriginalRotation;
         player.GetComponent<Rigidbody>().velocity = Vector3.zero;
         player.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        player.GetComponent<RocketControl>().Reset();
 
 
         // spawn target at random position above the platform
@@ -87,9 +84,9 @@ public class ArenaControl : MonoBehaviour
         targetVAngle = Random.Range(0f, max_Target_Angle);
         targetHAngle = Random.Range(0f, 365f);
 
-        Debug.Log(targetRadius);
-        Debug.Log(targetVAngle);
-        Debug.Log(targetHAngle);
+        // Debug.Log(targetRadius);
+        // Debug.Log(targetVAngle);
+        // Debug.Log(targetHAngle);
 
         Vector3 targetPos = center + Quaternion.Euler(0f, targetHAngle, targetVAngle) * Vector3.up * targetRadius;
 
@@ -97,5 +94,6 @@ public class ArenaControl : MonoBehaviour
         target.transform.position = targetPos;
 
         originalDistance = distanceToTarget();
+
     }
 }
