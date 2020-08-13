@@ -20,6 +20,7 @@ public class RocketControl : MonoBehaviour
     // autopilot
     private bool autopilotFlag = false;
     private Vector3 targetDirection;
+    private Vector3 targetLocation = new Vector3(0, 100, 0);
     // private Vector3 targetRotation;
     private float targetDistance;
     private float deltaX;
@@ -76,13 +77,12 @@ public class RocketControl : MonoBehaviour
 
         // disable particle system
         em = TrailParticles.GetComponent<ParticleSystem>().emission;
-        em.enabled = true;
+        em.enabled = false;
     }
 
     public void CollectTargetLocation(Vector3 location)
     {
-        targetDirection = (location - transform.position).normalized;
-        targetDistance = (location - transform.position).magnitude;
+        targetLocation = location;
 
         //deltaAngleZ = Vector3.SignedAngle(transform.up, targetDirection, transform.forward);
         //deltaAngleX = Vector3.SignedAngle(transform.up, targetDirection, transform.right);
@@ -93,40 +93,6 @@ public class RocketControl : MonoBehaviour
 
     private void Update()
     {
-        if (autopilotFlag == true)
-        {
-            stripX = targetDirection - Vector3.Dot(targetDirection, transform.forward) * transform.forward;
-            stripZ = targetDirection - Vector3.Dot(targetDirection, transform.right) * transform.right;
-
-            deltaX = Vector3.SignedAngle(stripX, transform.up, transform.forward);
-            deltaY = Vector3.SignedAngle(stripZ, transform.up, transform.right);
-
-            // Debug.Log(deltaX.ToString());
-            // Debug.Log(deltaY.ToString());
-
-            PTerm = new Vector2(deltaX, deltaY);
-            ITerm = 0.7f * ITerm + PTerm;
-            DTerm = - (PTerm - previousInputs) / Time.deltaTime;
-
-            CombinedInput = pWeight * PTerm + iWeight * ITerm + dWeight * DTerm;
-
-            xInput = Sigmoid(0.1 * CombinedInput.x);
-            yInput = Sigmoid(0.1 * CombinedInput.y);
-
-            ThrustPoint.transform.localRotation = Quaternion.Euler(yInput * MaxThrustAngle, 0, xInput * MaxThrustAngle);
-            
-            // Debug.DrawRay(transform.position, transform.up * 3, Color.red);
-            // Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
-            // Debug.DrawRay(transform.position, transform.right * 3, Color.green);
-            firing = true;
-
-            previousInputs = PTerm;
-        }
-        else
-        {
-            ThrustPoint.transform.localRotation = Quaternion.Euler(Move.y * MaxThrustAngle, 0, Move.x * MaxThrustAngle);
-            firing = playerFiring;
-        }
     }
 
     private void OnEnable()
@@ -147,11 +113,55 @@ public class RocketControl : MonoBehaviour
     // Fixed updata is called at fixed time intervals
     void FixedUpdate()
     {
+
+        if (autopilotFlag == true)
+        {
+            targetDirection = (targetLocation - transform.position).normalized;
+            targetDistance = (targetLocation - transform.position).magnitude;
+
+            stripX = targetDirection - Vector3.Dot(targetDirection, transform.forward) * transform.forward;
+            stripZ = targetDirection - Vector3.Dot(targetDirection, transform.right) * transform.right;
+
+            deltaX = Vector3.SignedAngle(stripX, transform.up, transform.forward);
+            deltaY = Vector3.SignedAngle(stripZ, transform.up, transform.right);
+
+            // Debug.Log(deltaX.ToString());
+            // Debug.Log(deltaY.ToString());
+
+            PTerm = new Vector2(deltaX, deltaY);
+            ITerm = 0.7f * ITerm + PTerm;
+            DTerm = -(PTerm - previousInputs) / Time.deltaTime;
+
+            CombinedInput = pWeight * PTerm + iWeight * ITerm + dWeight * DTerm;
+
+            Debug.Log("PTerm" + (pWeight * PTerm).ToString());
+            Debug.Log("ITerm" + (iWeight * ITerm).ToString());
+            Debug.Log("DTerm" + (dWeight * DTerm).ToString());
+            Debug.Log("Combined" + CombinedInput.ToString());
+
+            xInput = Sigmoid(0.1 * CombinedInput.x);
+            yInput = Sigmoid(0.1 * CombinedInput.y);
+
+            ThrustPoint.transform.localRotation = Quaternion.Euler(yInput * MaxThrustAngle, 0, xInput * MaxThrustAngle);
+
+            // Debug.DrawRay(transform.position, transform.up * 3, Color.red);
+            // Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
+            // Debug.DrawRay(transform.position, transform.right * 3, Color.green);
+            firing = true;
+
+            previousInputs = new Vector2(deltaX, deltaY);
+        }
+        else
+        {
+            ThrustPoint.transform.localRotation = Quaternion.Euler(-Move.y * MaxThrustAngle, 0, Move.x * MaxThrustAngle);
+            firing = playerFiring;
+        }
+
         if (firing)
         {
             // Debug.Log("applying thrust");
             em.enabled = true;
-            gameObject.GetComponent<Rigidbody>().AddForceAtPosition(ThrustPoint.transform.up * ThrustForce, ThrustPoint.transform.position, ForceMode.VelocityChange);
+            gameObject.GetComponent<Rigidbody>().AddForceAtPosition(ThrustPoint.transform.up * ThrustForce * Time.deltaTime, ThrustPoint.transform.position, ForceMode.VelocityChange);
         }
         else
         {

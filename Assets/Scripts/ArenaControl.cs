@@ -56,11 +56,13 @@ public class ArenaControl : MonoBehaviour
         else
         {
             currentReward = ((originalDistance - distanceToTarget()) / originalDistance);
-            player.GetComponent<RocketControl>().CollectTargetLocation(target.transform.position);
             rewardText.GetComponent<TextMeshProUGUI>().text = currentReward.ToString("0.00");
         }
+    }
 
-
+    private void FixedUpdate()
+    {
+        player.GetComponent<RocketControl>().CollectTargetLocation(target.transform.position);
     }
 
     private void Reset()
