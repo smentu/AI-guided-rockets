@@ -137,6 +137,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Platform
       objectReference: {fileID: 0}
+    - target: {fileID: 3605708431213141433, guid: ff33c94b6d78a5e4a8a64c0875731a29,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3605708431213141437, guid: ff33c94b6d78a5e4a8a64c0875731a29,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -324,6 +329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2039050858}
   offset: {x: 0, y: 0, z: -30}
+  cameraSensitivity: 0.1
 --- !u!1 &1117717063
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,6 +494,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3579976455357324307, guid: 0aab27a7fca8e774eaac7d85540bd865,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 4692870603181644951, guid: 0aab27a7fca8e774eaac7d85540bd865,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
@@ -503,6 +514,11 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.x
       value: 1.4
       objectReference: {fileID: 0}
+    - target: {fileID: 6364251436674674825, guid: 0aab27a7fca8e774eaac7d85540bd865,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6364251436674674826, guid: 0aab27a7fca8e774eaac7d85540bd865,
         type: 3}
       propertyPath: m_Name
@@ -512,11 +528,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 8937856175278566123, guid: 0aab27a7fca8e774eaac7d85540bd865,
-        type: 3}
-      propertyPath: ThrustForce
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8937856175278566123, guid: 0aab27a7fca8e774eaac7d85540bd865,
         type: 3}

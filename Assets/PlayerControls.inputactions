@@ -17,7 +17,7 @@
                     "name": "ThrustDirection",
                     "type": "Value",
                     "id": "bc43ceb6-7e4a-472b-915e-8e969e76fee7",
-                    "expectedControlType": "",
+                    "expectedControlType": "Stick",
                     "processors": "",
                     "interactions": ""
                 },
@@ -25,6 +25,22 @@
                     "name": "AutopilotToggle",
                     "type": "Button",
                     "id": "eca1ef2d-ff0b-4546-b5b8-0fcc5fab3a9f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "CameraMove",
+                    "type": "Value",
+                    "id": "ba23efa6-1dff-4cd6-99bc-326aaedfa440",
+                    "expectedControlType": "Stick",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "LegsToggle",
+                    "type": "Button",
+                    "id": "83daa8c3-74c9-4ba4-b245-2cbf2e1470eb",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -61,6 +77,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "AutopilotToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eeb98b58-6ba3-456c-a03c-93413a642e3a",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "df88def5-8bfc-4764-926d-b82a09c32d9d",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LegsToggle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

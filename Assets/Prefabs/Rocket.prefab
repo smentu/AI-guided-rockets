@@ -209,13 +209,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ThrustPoint: {fileID: 6000528274409456029}
-  ThrustForce: 20
+  ThrustForce: 150
   MaxThrustAngle: 20
-  massOffset: {x: 0, y: -2, z: 0}
   TrailParticles: {fileID: 457132401690144004}
-  pWeight: 1
-  iWeight: 0.1
-  dWeight: 0.1
+  Legs: []
+  maxFuel: 100
+  massOffset: {x: 0, y: 3, z: 0}
+  fuelMass: 8
+  dryMass: 2
+  pWeight: 0.5
+  iWeight: 0.01
+  dWeight: 0.01
 --- !u!1 &6000528274409456029
 GameObject:
   m_ObjectHideFlags: 0

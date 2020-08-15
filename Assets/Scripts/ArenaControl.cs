@@ -8,6 +8,9 @@ public class ArenaControl : MonoBehaviour
     public GameObject player;
     public GameObject targetPrefab;
     public GameObject rewardText;
+    public GameObject XInputBar;
+    public GameObject YInputBar;
+    public GameObject FuelBar;
 
     private GameObject target;
 
@@ -57,6 +60,15 @@ public class ArenaControl : MonoBehaviour
         {
             currentReward = ((originalDistance - distanceToTarget()) / originalDistance);
             rewardText.GetComponent<TextMeshProUGUI>().text = currentReward.ToString("0.00");
+
+            Vector2 currentInputs = player.GetComponent<RocketControl>().getInputValues();
+
+            XInputBar.GetComponent<inputBarController>().setFill(currentInputs.x);
+            YInputBar.GetComponent<inputBarController>().setFill(currentInputs.y);
+
+            float fuelFraction = player.GetComponent<RocketControl>().getFuel();
+
+            FuelBar.GetComponent<inputBarController>().setFill(fuelFraction);
         }
     }
 

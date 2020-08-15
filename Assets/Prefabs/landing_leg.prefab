@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8844576451748530162}
   m_Layer: 11
   m_Name: landing_leg
-  m_TagString: Untagged
+  m_TagString: Leg
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6542798543044164436}
   m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 1.78, z: 1.4}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -111,13 +111,13 @@ HingeJoint:
   m_Anchor: {x: 0, y: 1.8, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: -0.01999998, z: 1.4}
-  m_UseSpring: 0
+  m_ConnectedAnchor: {x: 0, y: -1.8, z: 0}
+  m_UseSpring: 1
   m_Spring:
-    spring: 10
-    damper: 4
+    spring: 300
+    damper: 100
     targetPosition: 0
-  m_UseMotor: 1
+  m_UseMotor: 0
   m_Motor:
     targetVelocity: 100
     force: 150
@@ -125,12 +125,12 @@ HingeJoint:
   m_UseLimits: 1
   m_Limits:
     min: 0
-    max: 120
+    max: 180
     bounciness: 0.5
     bounceMinVelocity: 5
     contactDistance: 1
   m_BreakForce: 500
-  m_BreakTorque: 400
+  m_BreakTorque: 500
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
   m_MassScale: 1

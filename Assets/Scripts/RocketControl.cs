@@ -1,24 +1,31 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class RocketControl : MonoBehaviour
 {
-    // internals
+    [Header("Model stuff")]
     public GameObject ThrustPoint;
-    public float ThrustForce;
-    public float MaxThrustAngle = 45;
-    public Vector3 massOffset = new Vector3(0, -2, 0);
+    public float ThrustForce = 15;
+    public float MaxThrustAngle = 20;
     public GameObject TrailParticles;
     private ParticleSystem.EmissionModule em;
-
-    // input stuff
+    public List<GameObject> Legs;
     PlayerControls controls;
     private Vector2 Move;
     private bool playerFiring;
     private bool firing;
 
+    [Header("Fuel and mass")]
+    public float maxFuel = 100;
+    private float currentFuel;
+    public Vector3 massOffset = new Vector3(0, -2, 0);
+    public float fuelMass = 8.0f;
+    public float dryMass = 2.0f;
+
     // autopilot
     private bool autopilotFlag = false;
+    private bool legsFlag = false;
     private Vector3 targetDirection;
     private Vector3 targetLocation = new Vector3(0, 100, 0);
     // private Vector3 targetRotation;
@@ -37,10 +44,20 @@ public class RocketControl : MonoBehaviour
     private Vector2 DTerm = Vector2.zero;
     private Vector2 CombinedInput = Vector2.zero;
 
+    [Header("PID parameters")]
     public float pWeight = 1.0f;
     public float iWeight = 0.1f;
     public float dWeight = 0.2f;
 
+    public Vector2 getInputValues()
+    {
+        return new Vector2((xInput + 1) / 2, (yInput + 1) / 2);
+    }
+
+    public float getFuel()
+    {
+        return currentFuel / maxFuel;
+    }
 
     void ToggleAutopilot()
     {
@@ -56,22 +73,67 @@ public class RocketControl : MonoBehaviour
         }
     }
 
+    void ToggleLegs()
+    {
+        float targetAngle = 0;
+        if (legsFlag == false)
+        {
+            Debug.Log("opened legs");
+            targetAngle = 130f;
+            legsFlag = true;
+        }
+        else
+        {
+            Debug.Log("closed legs");
+            targetAngle = 0f;
+            legsFlag = false;
+        }
+
+
+        foreach (GameObject leg in Legs)
+        {
+            try
+            {
+                JointSpring spr = leg.GetComponent<HingeJoint>().spring;
+                spr.targetPosition = targetAngle;
+                leg.GetComponent<HingeJoint>().spring = spr;
+            } catch
+            {
+                Debug.Log("Leg probably broke");
+            }
+        }
+    }
+
     private void Awake()
     {
+        GetComponent<Rigidbody>().mass = dryMass + fuelMass;
+
         controls = new PlayerControls();
 
         // define player input callbacks
         controls.Gameplay.AutopilotToggle.performed += ctx => ToggleAutopilot();
+        controls.Gameplay.LegsToggle.performed += ctx => ToggleLegs();
         controls.Gameplay.FireEngine.performed += ctx => playerFiring = true;
         controls.Gameplay.ThrustDirection.performed += ctx => Move = ctx.ReadValue<Vector2>();
 
         controls.Gameplay.ThrustDirection.canceled += ctx => Move = Vector2.zero;
         controls.Gameplay.FireEngine.canceled += ctx => playerFiring = false;
+
+        // put attached legs in list
+        foreach (Transform child in transform)
+        {
+            if (child.tag == "Leg")
+            {
+                Legs.Add(child.gameObject);
+                // Debug.Log(child.name);
+            }
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        currentFuel = maxFuel;
         // set the center of mass properly
         gameObject.GetComponent<Rigidbody>().centerOfMass = massOffset;
 
@@ -107,7 +169,7 @@ public class RocketControl : MonoBehaviour
 
     private static float Sigmoid(double value)
     {
-        return 1.0f / (1.0f + (float)Math.Exp(-value)) - 0.5f;
+        return (1.0f / (1.0f + (float)Math.Exp(-value)) - 0.5f) * 2.0f;
     }
 
     // Fixed updata is called at fixed time intervals
@@ -134,10 +196,10 @@ public class RocketControl : MonoBehaviour
 
             CombinedInput = pWeight * PTerm + iWeight * ITerm + dWeight * DTerm;
 
-            Debug.Log("PTerm" + (pWeight * PTerm).ToString());
-            Debug.Log("ITerm" + (iWeight * ITerm).ToString());
-            Debug.Log("DTerm" + (dWeight * DTerm).ToString());
-            Debug.Log("Combined" + CombinedInput.ToString());
+            // Debug.Log("PTerm" + (pWeight * PTerm).ToString());
+            // Debug.Log("ITerm" + (iWeight * ITerm).ToString());
+            // Debug.Log("DTerm" + (dWeight * DTerm).ToString());
+            // Debug.Log("Combined" + CombinedInput.ToString());
 
             xInput = Sigmoid(0.1 * CombinedInput.x);
             yInput = Sigmoid(0.1 * CombinedInput.y);
@@ -153,15 +215,22 @@ public class RocketControl : MonoBehaviour
         }
         else
         {
+
+            xInput = Move.x;
+            yInput = Move.y;
+
             ThrustPoint.transform.localRotation = Quaternion.Euler(-Move.y * MaxThrustAngle, 0, Move.x * MaxThrustAngle);
             firing = playerFiring;
         }
 
-        if (firing)
+        if (firing && currentFuel > 0)
         {
             // Debug.Log("applying thrust");
             em.enabled = true;
-            gameObject.GetComponent<Rigidbody>().AddForceAtPosition(ThrustPoint.transform.up * ThrustForce * Time.deltaTime, ThrustPoint.transform.position, ForceMode.VelocityChange);
+            currentFuel = currentFuel - Time.deltaTime;
+
+            GetComponent<Rigidbody>().mass = dryMass + fuelMass * getFuel();
+            gameObject.GetComponent<Rigidbody>().AddForceAtPosition(ThrustPoint.transform.up * ThrustForce * Time.deltaTime, ThrustPoint.transform.position, ForceMode.Impulse);
         }
         else
         {
@@ -172,5 +241,7 @@ public class RocketControl : MonoBehaviour
     public void Reset()
     {
         TrailParticles.GetComponent<ParticleSystem>().Clear();
+        currentFuel = maxFuel;
+        GetComponent<Rigidbody>().mass = dryMass + fuelMass;
     }
 }

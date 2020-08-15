@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 4945346120843426003}
   - component: {fileID: 8937856175278566123}
   m_Layer: 10
-  m_Name: rocket_body
+  m_Name: Lander
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -164,10 +164,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ThrustPoint: {fileID: 5687149481991879406}
-  ThrustForce: 2
+  ThrustForce: 150
   MaxThrustAngle: 20
-  massOffset: {x: 0, y: -2, z: 0}
   TrailParticles: {fileID: 1237873550877938558}
+  Legs: []
+  maxFuel: 100
+  massOffset: {x: 0, y: -2, z: 0}
+  fuelMass: 8
+  dryMass: 2
   pWeight: 1
   iWeight: 0.1
   dWeight: 0.2
@@ -624,6 +628,11 @@ PrefabInstance:
       propertyPath: m_ConnectedBody
       value: 
       objectReference: {fileID: 6364251436674674825}
+    - target: {fileID: 6542798543044164435, guid: a53911769e466d64abde4dafe36ff5d5,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 6542798543044164436, guid: a53911769e466d64abde4dafe36ff5d5,
         type: 3}
       propertyPath: m_Name
