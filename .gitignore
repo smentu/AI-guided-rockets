@@ -60,3 +60,18 @@ crashlytics-build.properties
 
 Assets/checker-map_tho.png
 Assets/checker-map_tho.png.meta
+almost_there.png
+
+Assets/ML-Agents/*
+Assets/Models/direction_ring.blend
+Assets/Models/direction_ring.blend1
+Assets/Models/direction_ring.blend.meta
+Assets/Models/direction_ring.blend1.meta
+Assets/Scenes/MissileDemoScene/Lightmap-0_comp_dir.png
+Assets/Scenes/MissileDemoScene/Lightmap-0_comp_dir.png.meta
+Assets/Scenes/MissileDemoScene/Lightmap-0_comp_light.exr
+Assets/Scenes/MissileDemoScene/Lightmap-0_comp_light.exr.meta
+Assets/Scenes/RocketArena/Lightmap-0_comp_light.exr.meta
+Assets/Scenes/RocketArena/Lightmap-0_comp_light.exr
+Assets/Scenes/RocketArena/Lightmap-0_comp_dir.png.meta
+Assets/Scenes/RocketArena/Lightmap-0_comp_dir.png

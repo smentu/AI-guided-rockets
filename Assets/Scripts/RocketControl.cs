@@ -28,8 +28,6 @@ public class RocketControl : MonoBehaviour
     private bool legsFlag = false;
     private Vector3 targetDirection;
     private Vector3 targetLocation = new Vector3(0, 100, 0);
-    // private Vector3 targetRotation;
-    private float targetDistance;
     private float deltaX;
     private float deltaY;
     private Vector3 stripX;
@@ -75,7 +73,8 @@ public class RocketControl : MonoBehaviour
 
     void ToggleLegs()
     {
-        float targetAngle = 0;
+        float targetAngle;
+
         if (legsFlag == false)
         {
             Debug.Log("opened legs");
@@ -179,7 +178,7 @@ public class RocketControl : MonoBehaviour
         if (autopilotFlag == true)
         {
             targetDirection = (targetLocation - transform.position).normalized;
-            targetDistance = (targetLocation - transform.position).magnitude;
+            // float targetDistance = (targetLocation - transform.position).magnitude;
 
             stripX = targetDirection - Vector3.Dot(targetDirection, transform.forward) * transform.forward;
             stripZ = targetDirection - Vector3.Dot(targetDirection, transform.right) * transform.right;

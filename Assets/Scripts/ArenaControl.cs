@@ -1,25 +1,26 @@
 ﻿using TMPro;
 using UnityEngine;
+using Unity.MLAgents;
 
 public class ArenaControl : MonoBehaviour
 {
     // arena contents
     public GameObject platform;
     public GameObject player;
-    public GameObject targetPrefab;
     public GameObject rewardText;
+    public GameObject speedText;
     public GameObject XInputBar;
     public GameObject YInputBar;
     public GameObject FuelBar;
 
-    private GameObject target;
+    private MissileAgent playerAgent;
+
+    public GameObject target;
 
     // arena params
     public float minTargetRadius = 30f;
     public float maxTargetRadius = 50f;
     public float max_Target_Angle = 45f;
-
-    private Vector3 center = new Vector3(0f, 0f, 0f);
 
     // arena state info
     private float targetRadius;
@@ -29,85 +30,80 @@ public class ArenaControl : MonoBehaviour
     private Vector3 playerOriginalPosition;
     private Quaternion playerOriginalRotation;
 
-    private float currentReward = 0f;
-    private float originalDistance;
+    PlayerControls controls;
 
-    private float distanceToTarget()
+    private void Awake()
     {
-        return Vector3.Distance(player.transform.position, target.transform.position);
-    }
+        //controls = new PlayerControls();
 
+        //controls.Gameplay.ResetSimulation.performed += ctx => Reset();
 
-    // Start is called before the first frame update
-    void Start()
-    {
         playerOriginalPosition = player.transform.position;
         playerOriginalRotation = player.transform.rotation;
 
         Reset();
     }
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        if (player)
+        {
+            playerAgent = player.GetComponent<MissileAgent>();
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (target.GetComponent<TargetCollision>().Collected())
+        if (rewardText)
         {
-            Destroy(target.gameObject);
-            // currentReward = 10.0f;
-            Reset();
-        }
-        else
-        {
-            currentReward = ((originalDistance - distanceToTarget()) / originalDistance);
+            //float currentReward = ((originalDistance - distanceToTarget()) / originalDistance);
+            float currentReward = playerAgent.GetCumulativeReward();
             rewardText.GetComponent<TextMeshProUGUI>().text = currentReward.ToString("0.00");
 
-            Vector2 currentInputs = player.GetComponent<RocketControl>().getInputValues();
+            float currentSpeed = player.GetComponent<Rigidbody>().velocity.magnitude;
+            speedText.GetComponent<TextMeshProUGUI>().text = currentSpeed.ToString("0.0") + " m/s";
 
-            XInputBar.GetComponent<inputBarController>().setFill(currentInputs.x);
-            YInputBar.GetComponent<inputBarController>().setFill(currentInputs.y);
+            Vector2 currentInputs = player.GetComponent<MissileAgent>().GetInputs();
 
-            float fuelFraction = player.GetComponent<RocketControl>().getFuel();
+            XInputBar.GetComponent<inputBarController>().setFill((currentInputs.x + 1) / 2);
+            YInputBar.GetComponent<inputBarController>().setFill((currentInputs.y + 1) / 2);
+
+            float fuelFraction = player.GetComponent<MissileAgent>().GetFuel();
 
             FuelBar.GetComponent<inputBarController>().setFill(fuelFraction);
         }
     }
 
-    private void FixedUpdate()
+    public void Reset()
     {
-        player.GetComponent<RocketControl>().CollectTargetLocation(target.transform.position);
-    }
-
-    private void Reset()
-    {
-        // delete target if one exists
-        //if (target.scene.IsValid())
-        //{
-        //    Destroy(target.gameObject);
-        //}
-
         // reset player state
         player.transform.position = playerOriginalPosition;
         player.transform.rotation = playerOriginalRotation;
         player.GetComponent<Rigidbody>().velocity = Vector3.zero;
         player.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-        player.GetComponent<RocketControl>().Reset();
+        //player.GetComponent<RocketControl>().Reset();
 
+
+        float targetHeight = Academy.Instance.EnvironmentParameters.GetWithDefault("target_height", 75.0f);
 
         // spawn target at random position above the platform
-        targetRadius = Random.Range(minTargetRadius, maxTargetRadius);
+        // targetRadius = Random.Range(sdfsadf, targetHeight);
         targetVAngle = Random.Range(0f, max_Target_Angle);
         targetHAngle = Random.Range(0f, 365f);
 
         // Debug.Log(targetRadius);
         // Debug.Log(targetVAngle);
         // Debug.Log(targetHAngle);
+        Vector3 targetPos = platform.transform.position + Quaternion.Euler(0f, targetHAngle, targetVAngle) * Vector3.up * targetHeight;
 
-        Vector3 targetPos = center + Quaternion.Euler(0f, targetHAngle, targetVAngle) * Vector3.up * targetRadius;
-
-        target = Instantiate(targetPrefab.gameObject);
+        // target = Instantiate(targetPrefab.gameObject);
         target.transform.position = targetPos;
 
-        originalDistance = distanceToTarget();
+        //target.transform.localScale = new Vector3(targetScale, targetScale, targetScale);
+
+        // originalDistance = distanceToTarget();
 
     }
 }

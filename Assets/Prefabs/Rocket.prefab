@@ -94,7 +94,8 @@ GameObject:
   - component: {fileID: 7720168219098575686}
   - component: {fileID: 1284435446394517332}
   - component: {fileID: 1284435446394517335}
-  - component: {fileID: 1284435446394517333}
+  - component: {fileID: 4792118137764819234}
+  - component: {fileID: 1385790617425934400}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Player
@@ -175,7 +176,7 @@ Rigidbody:
   m_GameObject: {fileID: 1284435446394517334}
   serializedVersion: 2
   m_Mass: 10
-  m_Drag: 1
+  m_Drag: 0.1
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -196,7 +197,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 2534964839176971238, guid: 85d97d130cc95804d8b381a70f4ffda4, type: 3}
---- !u!114 &1284435446394517333
+--- !u!114 &4792118137764819234
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,21 +206,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 1284435446394517334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b88c8bfd962f234aa035da0fcc381a7, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ThrustPoint: {fileID: 6000528274409456029}
-  ThrustForce: 150
-  MaxThrustAngle: 20
-  TrailParticles: {fileID: 457132401690144004}
-  Legs: []
-  maxFuel: 100
-  massOffset: {x: 0, y: 3, z: 0}
+  m_BrainParameters:
+    VectorObservationSize: 9
+    NumStackedVectorObservations: 1
+    VectorActionSize: 02000000
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 1
+  m_Model: {fileID: 0}
+  m_InferenceDevice: 1
+  m_BehaviorType: 0
+  m_BehaviorName: MissileLearning
+  TeamId: 0
+  m_UseChildSensors: 1
+  m_ObservableAttributeHandling: 0
+--- !u!114 &1385790617425934400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284435446394517334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15dda031e24827846bea49e8ddc9e270, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 500
+  maxFuel: 20
+  maxEngineAngle: 15
+  target: {fileID: 0}
+  thrustPoint: {fileID: 6000528274409456029}
+  makeSmoke: 0
   fuelMass: 8
   dryMass: 2
-  pWeight: 0.5
-  iWeight: 0.01
-  dWeight: 0.01
+  thrustForce: 115
+  massOffset: {x: 0, y: -2, z: 0}
 --- !u!1 &6000528274409456029
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,12 +348,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ace2995c15c0d9a438dec6b0cabd3944, type: 3}
---- !u!1 &457132401690144004 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7197326919024876801, guid: ace2995c15c0d9a438dec6b0cabd3944,
-    type: 3}
-  m_PrefabInstance: {fileID: 7330177719224397829}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2213562158679105054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8863685234756611611, guid: ace2995c15c0d9a438dec6b0cabd3944,

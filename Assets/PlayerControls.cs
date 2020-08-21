@@ -57,13 +57,21 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""ResetSimulation"",
+                    ""type"": ""Button"",
+                    ""id"": ""671b86dc-dfc1-4cfc-a244-10aff93d4fb0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
                     ""id"": ""acf797e2-2468-4fa3-825d-3f106f8629af"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -114,6 +122,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""LegsToggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44678f00-eccd-410e-867c-41da75a859a7"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResetSimulation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -127,6 +146,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Gameplay_AutopilotToggle = m_Gameplay.FindAction("AutopilotToggle", throwIfNotFound: true);
         m_Gameplay_CameraMove = m_Gameplay.FindAction("CameraMove", throwIfNotFound: true);
         m_Gameplay_LegsToggle = m_Gameplay.FindAction("LegsToggle", throwIfNotFound: true);
+        m_Gameplay_ResetSimulation = m_Gameplay.FindAction("ResetSimulation", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -181,6 +201,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Gameplay_AutopilotToggle;
     private readonly InputAction m_Gameplay_CameraMove;
     private readonly InputAction m_Gameplay_LegsToggle;
+    private readonly InputAction m_Gameplay_ResetSimulation;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -190,6 +211,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @AutopilotToggle => m_Wrapper.m_Gameplay_AutopilotToggle;
         public InputAction @CameraMove => m_Wrapper.m_Gameplay_CameraMove;
         public InputAction @LegsToggle => m_Wrapper.m_Gameplay_LegsToggle;
+        public InputAction @ResetSimulation => m_Wrapper.m_Gameplay_ResetSimulation;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -214,6 +236,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @LegsToggle.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegsToggle;
                 @LegsToggle.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegsToggle;
                 @LegsToggle.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegsToggle;
+                @ResetSimulation.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnResetSimulation;
+                @ResetSimulation.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnResetSimulation;
+                @ResetSimulation.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnResetSimulation;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -233,6 +258,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @LegsToggle.started += instance.OnLegsToggle;
                 @LegsToggle.performed += instance.OnLegsToggle;
                 @LegsToggle.canceled += instance.OnLegsToggle;
+                @ResetSimulation.started += instance.OnResetSimulation;
+                @ResetSimulation.performed += instance.OnResetSimulation;
+                @ResetSimulation.canceled += instance.OnResetSimulation;
             }
         }
     }
@@ -244,5 +272,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnAutopilotToggle(InputAction.CallbackContext context);
         void OnCameraMove(InputAction.CallbackContext context);
         void OnLegsToggle(InputAction.CallbackContext context);
+        void OnResetSimulation(InputAction.CallbackContext context);
     }
 }

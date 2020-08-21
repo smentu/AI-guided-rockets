@@ -44,13 +44,21 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "ResetSimulation",
+                    "type": "Button",
+                    "id": "671b86dc-dfc1-4cfc-a244-10aff93d4fb0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
                 {
                     "name": "",
                     "id": "acf797e2-2468-4fa3-825d-3f106f8629af",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -99,6 +107,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "LegsToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44678f00-eccd-410e-867c-41da75a859a7",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ResetSimulation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
