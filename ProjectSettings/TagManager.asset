@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Leg
+  - GridFinZ
+  - GridFinX
+  - GridFinZR
+  - GridFinXR
+  - rocketEffects
+  - smoke
   layers:
   - Default
   - TransparentFX

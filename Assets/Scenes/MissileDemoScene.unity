@@ -411,22 +411,22 @@ PrefabInstance:
     - target: {fileID: 2864310816366994424, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
       propertyPath: MaxStep
-      value: 750
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 4180716573106957398, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.0824
+      value: 3.045302
       objectReference: {fileID: 0}
     - target: {fileID: 4180716573106957398, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.0824
+      value: 3.045302
       objectReference: {fileID: 0}
     - target: {fileID: 4180716573106957398, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.0824
+      value: 3.045302
       objectReference: {fileID: 0}
     - target: {fileID: 7475247606885886144, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
@@ -650,7 +650,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1869253218}
-  offset: {x: 0, y: 20, z: -70}
+  offset: {x: 0, y: 20, z: -60}
   cameraSensitivity: 0.1
 --- !u!4 &1869253218 stripped
 Transform:
