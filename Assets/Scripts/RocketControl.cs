@@ -15,8 +15,6 @@ public class RocketControl : MonoBehaviour
 
     [Header("Fuel and mass")]
     public float maxFuel = 100;
-    public Vector3 cgOffset = new Vector3(0, -2, 0);
-    public Vector3 cpOffset = new Vector3(0, 0, 0);
     public float fuelMass = 8.0f;
     public float dryMass = 2.0f;
     public AnimationCurve thrustCurve;
@@ -33,7 +31,6 @@ public class RocketControl : MonoBehaviour
 
     // autopilot
     private bool autopilotFlag = false;
-    private bool legsFlag = false;
     private bool finsFlag = true;
     private Vector3 targetDirection;
     private Vector3 targetLocation = new Vector3(0, 100, 0);
@@ -124,8 +121,8 @@ public class RocketControl : MonoBehaviour
 
     void ToggleFins()
     {
+        Debug.Log("Toggled fins");
         finsFlag = toggleValue(finsFlag);
-        //Debug.Log("Toggled fins");
 
         foreach (GameObject fin in GridFins)
         {
@@ -133,21 +130,18 @@ public class RocketControl : MonoBehaviour
         }
     }
 
-    void ToggleLegs()
+    void SetLegs(bool legsFlag)
     {
         float targetAngle;
 
-        if (legsFlag == false)
+        if (legsFlag == true)
         {
             //Debug.Log("opened legs");
             targetAngle = 130f;
-            legsFlag = true;
         }
         else
         {
-            //Debug.Log("closed legs");
             targetAngle = 0f;
-            legsFlag = false;
         }
 
 
@@ -173,7 +167,7 @@ public class RocketControl : MonoBehaviour
 
         // define player input callbacks
         controls.Gameplay.AutopilotToggle.performed += ctx => ToggleAutopilot();
-        controls.Gameplay.LegsToggle.performed += ctx => ToggleLegs();
+        //controls.Gameplay.LegsToggle.performed += ctx => ToggleLegs();
         controls.Gameplay.FinToggle.performed += ctx => ToggleFins();
         controls.Gameplay.FireEngine.performed += ctx => playerThrust = ctx.ReadValue<float>();
         controls.Gameplay.ThrustDirection.performed += ctx => Move = ctx.ReadValue<Vector2>();
@@ -208,25 +202,31 @@ public class RocketControl : MonoBehaviour
     {
         currentFuel = maxFuel;
         // set the center of mass more appropriately
-        gameObject.GetComponent<Rigidbody>().centerOfMass = cgOffset;
 
         // disable particle system
         SetEffects(0.0f);
     }
 
-    public void CollectTargetLocation(Vector3 location)
-    {
-        targetLocation = location;
+    //public void CollectTargetLocation(Vector3 location)
+    //{
+    //    targetLocation = location;
 
-        //deltaAngleZ = Vector3.SignedAngle(transform.up, targetDirection, transform.forward);
-        //deltaAngleX = Vector3.SignedAngle(transform.up, targetDirection, transform.right);
+    //    //deltaAngleZ = Vector3.SignedAngle(transform.up, targetDirection, transform.forward);
+    //    //deltaAngleX = Vector3.SignedAngle(transform.up, targetDirection, transform.right);
 
-    }
+    //}
 
     // Update is called once per frame
 
     private void Update()
     {
+        if (transform.position.y < 100)
+        {
+            SetLegs(true);
+        } else
+        {
+            SetLegs(false);
+        }
     }
 
     private void OnEnable()

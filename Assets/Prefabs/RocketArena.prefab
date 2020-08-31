@@ -149,11 +149,26 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 1385790617425934400, guid: f559fb23392b8ee489d6fca610f164b4,
+        type: 3}
+      propertyPath: makeSmoke
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4792118137764819234, guid: f559fb23392b8ee489d6fca610f164b4,
+        type: 3}
+      propertyPath: m_UseChildSensors
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6000528274409456029, guid: f559fb23392b8ee489d6fca610f164b4,
         type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7720168219098575686, guid: f559fb23392b8ee489d6fca610f164b4,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 880b8baabf24d5b4bb1ef6e80394d994, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f559fb23392b8ee489d6fca610f164b4, type: 3}
 --- !u!1 &2677523569740819694 stripped

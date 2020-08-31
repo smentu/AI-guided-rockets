@@ -3,9 +3,13 @@
 public class CylinderPhysics : MonoBehaviour
 {
     public float dragCoefficient;
+    [Tooltip("Offset of the center of pressure")]
+    public Vector3 cpOffset;
+    [Tooltip("Offset of the center of gravity")]
+    public Vector3 cgOffset;
+
     private float radius;
     private float length;
-
     private UnityEngine.Mesh mesh;
     private Vector3 forceVector;
 
@@ -18,6 +22,7 @@ public class CylinderPhysics : MonoBehaviour
         radius = mesh.bounds.extents.x * transform.localScale.x;
 
         Debug.Log("rocket dimensions are" + GetDims());
+        gameObject.GetComponent<Rigidbody>().centerOfMass = cgOffset;
     }
 
     public Vector2 GetDims()
@@ -32,7 +37,7 @@ public class CylinderPhysics : MonoBehaviour
         Vector3 direction = velocity.normalized;
         float vsquared = Mathf.Pow(velocity.magnitude, 2);
 
-        Debug.Log(velocity.magnitude);
+        // Debug.Log(velocity.magnitude);
 
         float parallelForce = - dragCoefficient * Vector3.Dot(direction, transform.up) * vsquared * Mathf.PI * Mathf.Pow(radius, 2);
         float perpendicularForceX = - dragCoefficient * Vector3.Dot(direction, transform.right) * vsquared * 2 * radius * length;
@@ -42,14 +47,13 @@ public class CylinderPhysics : MonoBehaviour
         //Vector3 forceVector = transform.up * 10f;
 
         //Vector3 cg = transform.TransformPoint(GetComponent<Rigidbody>().centerOfMass);
-        Vector3 cp = transform.TransformPoint(GetComponent<RocketControl>().cpOffset);
-        GetComponent<Rigidbody>().AddForceAtPosition(transform.rotation * forceVector, cp);
+        //Vector3 cp = transform.TransformPoint(GetComponent<RocketControl>().cpOffset);
+        GetComponent<Rigidbody>().AddForceAtPosition(transform.rotation * forceVector, transform.TransformPoint(cpOffset));
     }
 
     void OnDrawGizmos()
     {
-        Vector3 cp = transform.TransformPoint(GetComponent<RocketControl>().cpOffset);
-
+        Vector3 cp = transform.TransformPoint(cpOffset);
         Gizmos.color = Color.red;
         Gizmos.DrawRay(cp, transform.rotation * forceVector);
         Gizmos.color = Color.blue;

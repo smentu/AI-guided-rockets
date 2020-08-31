@@ -13,7 +13,7 @@ public class ArenaControl : MonoBehaviour
     public GameObject YInputBar;
     public GameObject FuelBar;
 
-    private MissileAgent playerAgent;
+    private RocketAgent playerAgent;
 
     public GameObject target;
 
@@ -49,7 +49,7 @@ public class ArenaControl : MonoBehaviour
     {
         if (player)
         {
-            playerAgent = player.GetComponent<MissileAgent>();
+            playerAgent = player.GetComponent<RocketAgent>();
         }
     }
 
@@ -62,10 +62,10 @@ public class ArenaControl : MonoBehaviour
             float currentReward = playerAgent.GetCumulativeReward();
             rewardText.GetComponent<TextMeshProUGUI>().text = currentReward.ToString("0.00");
 
-            float currentSpeed = player.GetComponent<Rigidbody>().velocity.magnitude;
+            float currentSpeed = playerAgent.GetSpeed();
             speedText.GetComponent<TextMeshProUGUI>().text = currentSpeed.ToString("0.0") + " m/s";
 
-            Vector2 currentInputs = player.GetComponent<MissileAgent>().GetInputs();
+            Vector2 currentInputs = playerAgent.GetXYInputs();
 
             XInputBar.GetComponent<inputBarController>().setFill((currentInputs.x + 1) / 2);
             YInputBar.GetComponent<inputBarController>().setFill((currentInputs.y + 1) / 2);

@@ -2,7 +2,7 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 
-public class MissileAgent : Agent
+public class MissileAgent : RocketAgent
 {
     [Tooltip("Fuel capacity, corresponding to seconds of full thrust")]
     public float maxFuel=20f;
@@ -35,6 +35,20 @@ public class MissileAgent : Agent
     private Vector2 Move;
     // private float playerFiring;
 
+    public override Vector2 GetXYInputs()
+    {
+        return new Vector2(engineX, engineY);
+    }
+
+    public override float GetSpeed()
+    {
+        return GetComponent<Rigidbody>().velocity.magnitude;
+    }
+    public override float GetFuel()
+    {
+        return currentFuel / maxFuel;
+    }
+
     public override void Initialize()
     {
         base.Initialize();
@@ -61,16 +75,6 @@ public class MissileAgent : Agent
 
         controls.Gameplay.ThrustDirection.canceled += ctx => Move = Vector2.zero;
         //controls.Gameplay.FireEngine.canceled += ctx => playerFiring = 0f;
-    }
-
-    public Vector2 GetInputs()
-    {
-        return new Vector2(engineX, engineY);
-    }
-
-    public float GetFuel()
-    {
-        return currentFuel / maxFuel;
     }
 
     void FixedUpdate()
@@ -109,13 +113,13 @@ public class MissileAgent : Agent
         //Debug.Log("new previous best: " + previousBest);
 
         if (StepCount % 5 == 0)
-            {
-                RequestDecision();
-            }
-            else
-            {
-                RequestAction();
-            }
+        {
+            RequestDecision();
+        }
+        else
+        {
+            RequestAction();
+        }
     }
 
     public override void Heuristic(float[] actionsOut)

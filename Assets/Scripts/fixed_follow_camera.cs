@@ -19,6 +19,8 @@ public class fixed_follow_camera : MonoBehaviour {
 
         controls.Gameplay.CameraMove.performed += ctx => cameraDelta = ctx.ReadValue<Vector2>();
         controls.Gameplay.CameraMove.canceled += ctx => cameraDelta = Vector2.zero;
+
+        yAngle = 45;
     }
 
     // Update is called once per frame

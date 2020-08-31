@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6542798543044164434}
   - component: {fileID: 6542798543044164435}
   - component: {fileID: 8844576451748530162}
+  - component: {fileID: 4104943216296599799}
   m_Layer: 11
   m_Name: landing_leg
   m_TagString: Leg
@@ -114,8 +115,8 @@ HingeJoint:
   m_ConnectedAnchor: {x: 0, y: -1.8, z: 0}
   m_UseSpring: 1
   m_Spring:
-    spring: 2000
-    damper: 1500
+    spring: 4000
+    damper: 3000
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -129,8 +130,8 @@ HingeJoint:
     bounciness: 0.5
     bounceMinVelocity: 5
     contactDistance: 1
-  m_BreakForce: 5000
-  m_BreakTorque: 5000
+  m_BreakForce: 8000
+  m_BreakTorque: 8000
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
   m_MassScale: 1
@@ -149,3 +150,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -927182686038628996, guid: fd106499ac971a848bad179f518f5439, type: 3}
+--- !u!114 &4104943216296599799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542798543044164436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d4368ee84d2f141ac3c5459270c878, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

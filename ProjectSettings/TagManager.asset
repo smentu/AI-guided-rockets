@@ -11,6 +11,7 @@ TagManager:
   - GridFinXR
   - rocketEffects
   - smoke
+  - ground
   layers:
   - Default
   - TransparentFX

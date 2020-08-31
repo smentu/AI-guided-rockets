@@ -18,6 +18,7 @@ public class TargetDirectionIndicator : MonoBehaviour
         transform.position = (rocket.position + new Vector3(0f, -2f, 0f)) + direction.normalized * offset;
         transform.up = direction;
 
-        pointerMat.SetFloat("ArrowOpacity123", Sigmoid(direction.magnitude - 40));
+        //Debug.Log(direction.magnitude);
+        pointerMat.SetFloat("ArrowOpacity123", Sigmoid(direction.magnitude - 60));
     }
 }

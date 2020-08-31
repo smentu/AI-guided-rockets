@@ -7,8 +7,8 @@ PhysicMaterial:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: rocket_physics_material
-  dynamicFriction: 3
-  staticFriction: 3
-  bounciness: 0
+  dynamicFriction: 0.9
+  staticFriction: 0.9
+  bounciness: 0.01
   frictionCombine: 0
   bounceCombine: 0
