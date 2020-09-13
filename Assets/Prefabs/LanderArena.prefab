@@ -127,6 +127,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platform: {fileID: 1768191652153037892}
+  title: {fileID: 0}
+  infoBG: {fileID: 0}
   rewardNumber: {fileID: 0}
   speedNumber: {fileID: 0}
   XInputBar: {fileID: 0}

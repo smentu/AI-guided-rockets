@@ -296,11 +296,13 @@ public class LanderAgent : RocketAgent
 
         //float limitCeiling = 100;
         //float maxSpeed = 50f;
+        float heightMultiplier = 1;
 
         if (height < limitCeiling && height > 0)
         {
             float effectiveHeight = height / limitCeiling;
             speedLimit = speedLimitCurve.Evaluate(effectiveHeight) * maxSpeed;
+            heightMultiplier = 1 - height / limitCeiling;
         }
         else
         {
@@ -314,7 +316,7 @@ public class LanderAgent : RocketAgent
         //AddReward(-0.5f * Mathf.Log(Mathf.Max(0f, previousHeight - height) * Mathf.Max(0f, GetComponent<Rigidbody>().velocity.magnitude - speedLimit) + 1, 10));
         //AddReward(0.01f * Mathf.Max(0f, previousHeight - height));
 
-        float transformedSpeedReward = -0.15f * Mathf.Max(0f, previousHeight - height) * Sigmoid(speedDifference, 0.2f);
+        float transformedSpeedReward = -0.3f * heightMultiplier * Mathf.Max(0f, previousHeight - height) * Sigmoid(speedDifference, 0.2f);
         //float transformedSpeedReward = -0.5f * Time.deltaTime * Sigmoid(speedDifference, 0.5f);
 
         if (height < limitCeiling && height > 0) // && height < previousHeight)

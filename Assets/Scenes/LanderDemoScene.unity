@@ -379,12 +379,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1400676783}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2902496c0120472b90269f94a0aec7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Record: 0
+  Record: 1
   DemonstrationName: demo_01
   DemonstrationDirectory: C:\Users\sante\repos\unity_robot_rockets\Assets\ML-Agents\Examples\Lander\Demos
 --- !u!1001 &1404513903
@@ -522,17 +522,17 @@ PrefabInstance:
     - target: {fileID: 1286196752482409350, guid: 47d3401410340c84f8c5fcef1e006032,
         type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 0.24528301
       objectReference: {fileID: 0}
     - target: {fileID: 1286196752482409350, guid: 47d3401410340c84f8c5fcef1e006032,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.25051662
+      value: 0.24528301
       objectReference: {fileID: 0}
     - target: {fileID: 1286196752482409350, guid: 47d3401410340c84f8c5fcef1e006032,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.990566
+      value: 0.24528301
       objectReference: {fileID: 0}
     - target: {fileID: 1286196752883066608, guid: 47d3401410340c84f8c5fcef1e006032,
         type: 3}
@@ -907,6 +907,21 @@ PrefabInstance:
       propertyPath: MaxStep
       value: 2000
       objectReference: {fileID: 0}
+    - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: speedLimitCurve.m_Curve.Array.data[0].time
+      value: 0.0047405655
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: speedLimitCurve.m_Curve.Array.data[0].inSlope
+      value: 0.49908796
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: speedLimitCurve.m_Curve.Array.data[0].outSlope
+      value: 0.49908796
+      objectReference: {fileID: 0}
     - target: {fileID: 1746871045857688612, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_Name
@@ -996,11 +1011,6 @@ PrefabInstance:
         type: 3}
       propertyPath: randomizeY
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1746871045857688615, guid: 548461d296eb4f845a3e1d675fb2f2db,
-        type: 3}
-      propertyPath: speedVariance
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1746871045857688615, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
