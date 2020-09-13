@@ -406,6 +406,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 613206353}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1258710717 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7794630202970499506, guid: 47d3401410340c84f8c5fcef1e006032,
+    type: 3}
+  m_PrefabInstance: {fileID: 613206353}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1427032114
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -421,7 +427,7 @@ PrefabInstance:
     - target: {fileID: 2864310816366994424, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
       propertyPath: MaxStep
-      value: 1500
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 4180716573106957398, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
@@ -468,6 +474,16 @@ PrefabInstance:
       propertyPath: FuelBar
       value: 
       objectReference: {fileID: 613206354}
+    - target: {fileID: 7475247606885886145, guid: 959da717dd8cabe4b9a18b52387e449b,
+        type: 3}
+      propertyPath: infoBG
+      value: 
+      objectReference: {fileID: 1741194649}
+    - target: {fileID: 7475247606885886145, guid: 959da717dd8cabe4b9a18b52387e449b,
+        type: 3}
+      propertyPath: title
+      value: 
+      objectReference: {fileID: 1258710717}
     - target: {fileID: 7475247606885886150, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -614,13 +630,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1477333427}
-  m_LocalRotation: {x: 0.21303818, y: -0, z: -0, w: 0.9770439}
+  m_LocalRotation: {x: 0.18986662, y: 0, z: 0, w: 0.98181}
   m_LocalPosition: {x: 0, y: 32, z: -42.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 24.601, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 21.89, y: 0, z: 0}
 --- !u!114 &1477333431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,8 +681,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1869253218}
-  offset: {x: 0, y: 20, z: -60}
+  offset: {x: 0, y: 10, z: -60}
   cameraSensitivity: 0.1
+--- !u!1 &1741194649 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1286196752482409344, guid: 47d3401410340c84f8c5fcef1e006032,
+    type: 3}
+  m_PrefabInstance: {fileID: 613206353}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1869253218 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4412280396256730042, guid: 959da717dd8cabe4b9a18b52387e449b,

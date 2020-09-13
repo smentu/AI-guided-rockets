@@ -34,4 +34,9 @@ public class RocketAgent : Agent
     {
 
     }
+
+    public virtual bool IsUsingAI()
+    {
+        return false;
+    }
 }

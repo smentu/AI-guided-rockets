@@ -1,12 +1,16 @@
 ﻿using TMPro;
 using UnityEngine;
 using Unity.MLAgents;
+using UnityEngine.UI;
 
 public class ArenaControl : MonoBehaviour
 {
     // arena contents
     public GameObject platform;
     public GameObject player;
+
+    public GameObject infoBG;
+    public GameObject title;
     public GameObject rewardText;
     public GameObject speedText;
     public GameObject XInputBar;
@@ -105,5 +109,16 @@ public class ArenaControl : MonoBehaviour
 
         // originalDistance = distanceToTarget();
 
+
+        if (player.GetComponent<RocketAgent>().IsUsingAI())
+        {
+            title.GetComponent<TextMeshProUGUI>().text = "Control:\tAI";
+            infoBG.GetComponent<Image>().color = new Color32(0x00, 0x40, 0xFD, 0xFF);
+        }
+        else
+        {
+            title.GetComponent<TextMeshProUGUI>().text = "Control:\tPlayer";
+            infoBG.GetComponent<Image>().color = new Color32(0x33, 0x33, 0x33, 0xFF);
+        }
     }
 }

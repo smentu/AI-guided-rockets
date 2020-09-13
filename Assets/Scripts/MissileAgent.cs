@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
+using Unity.MLAgents.Policies;
 
 public class MissileAgent : RocketAgent
 {
@@ -171,6 +172,18 @@ public class MissileAgent : RocketAgent
 
         sensor.AddObservation(upVector);
         sensor.AddObservation(velocityVector);
+    }
+
+    public override bool IsUsingAI()
+    {
+        if (GetComponent<BehaviorParameters>().BehaviorType == BehaviorType.HeuristicOnly)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     private void OnTriggerEnter(Collider collider)

@@ -2,7 +2,7 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using System.Collections.Generic;
-using Unity.MLAgents.Policies;  
+using Unity.MLAgents.Policies;
 
 public class LanderAgent : RocketAgent
 {
@@ -16,6 +16,8 @@ public class LanderAgent : RocketAgent
     public GameObject thrustPoint;
     [Tooltip("Whether to produce rocket effects")]
     public bool showEffects = false;
+    [Tooltip("Whether to reset automatically after hitting ground")]
+    public bool resetOnTouchdown = true;
 
     PlayerControls controls;
 
@@ -26,25 +28,36 @@ public class LanderAgent : RocketAgent
     [Range(0.0f, 1.0f)]
     public float startingFuel;
     public AnimationCurve thrustCurve;
+    public float limitCeiling = 150;
+    public float maxSpeed = 30f;
+    public AnimationCurve speedLimitCurve;
 
     private GameObject landingPad;
     private float currentFuel;
-    private float initialDistance;
+    private bool touchDown;
+    private float previousHeight;
+    private float previousPitch;
+    private float previousRoll;
+    private Vector3 previousTargetVector;
     private float previousDistanceReward;
-    private bool touchDown = false;
+
 
     // lander state variables
     private float inputX;
     private float inputY;
     private float thrust;
     private bool legsDeployed = false;
+    private float speedLimit;
+    private int nLegsTouching;
+    private bool usingAI;
     //private bool gridFinsDeployed = false;
 
     // lander child components
     private List<GameObject> legs;
     private List<GameObject> gridFins;
     private List<ParticleSystem> rocketEffects;
-    private LanderArenaControl arena;
+    public LanderArenaControl arena;
+    //private GameObject coneOrigin;
 
     // player inputs
     private Vector2 move;
@@ -57,7 +70,7 @@ public class LanderAgent : RocketAgent
         arena = GetComponentInParent<LanderArenaControl>();
 
         landingPad = arena.platform;
-        initialDistance = (thrustPoint.transform.position - landingPad.transform.position).magnitude;
+        //initialDistance = (thrustPoint.transform.position - landingPad.transform.position).magnitude;
 
         // collect and categorize legs and grid fins
         legs = new List<GameObject>();
@@ -69,9 +82,11 @@ public class LanderAgent : RocketAgent
             if (child.tag == "Leg")
             {
                 legs.Add(child.gameObject);
+                //Debug.Log("found leg: " + child.name);
             }
             else if (child.tag == "GridFinX" | child.tag == "GridFinZ" | child.tag == "GridFinXR" | child.tag == "GridFinZR")
             {
+                //Debug.Log("found fin: " + child.name);
                 gridFins.Add(child.gameObject);
             }
         }
@@ -79,9 +94,11 @@ public class LanderAgent : RocketAgent
         // collect rocket effects
         foreach (ParticleSystem ps in thrustPoint.gameObject.GetComponentsInChildren<ParticleSystem>())
         {
-            Debug.Log("found particle system: " + ps.name);
+            //Debug.Log("found particle system: " + ps.name);
             rocketEffects.Add(ps);
         }
+
+        //coneOrigin = arena.coneOrigin;
     }
 
     public void Awake()
@@ -91,15 +108,26 @@ public class LanderAgent : RocketAgent
         // define player input callbacks
         controls.Gameplay.ThrustDirection.performed += ctx => move = ctx.ReadValue<Vector2>();
         controls.Gameplay.FireEngine.performed += ctx => thrustInput = ctx.ReadValue<float>();
+        controls.Gameplay.ResetSimulation.performed += ctx => ToggleAI();
 
         controls.Gameplay.ThrustDirection.canceled += ctx => move = Vector2.zero;
         controls.Gameplay.FireEngine.canceled += ctx => thrustInput = 0.0f;
 
         thrustInput = 0.0f;
+
+        if (GetComponent<BehaviorParameters>().BehaviorType == BehaviorType.HeuristicOnly)
+        {
+            usingAI = false;
+        } else
+        {
+            usingAI = true;
+        }
     }
 
     public override void OnActionReceived(float[] vectorAction)
     {
+        //inputX = Mathf.Sign(vectorAction[0]) * Mathf.Abs(Mathf.Pow(vectorAction[0], 2));
+        //inputY = Mathf.Sign(vectorAction[1]) * Mathf.Abs(Mathf.Pow(vectorAction[1], 2));
         inputX = vectorAction[0];
         inputY = vectorAction[1];
         // normalize thrust input to between 0 and 1
@@ -109,7 +137,7 @@ public class LanderAgent : RocketAgent
     public override void OnEpisodeBegin()
     {
         //SetReward(0.0f);
-        previousDistanceReward = 0;
+        //previousDistanceReward = 0;
         // reset arena
         arena.Reset();
         // clear and reset effects
@@ -120,20 +148,36 @@ public class LanderAgent : RocketAgent
         //Debug.Log("the initial distance is: " + initialDistance);
 
         thrustInput = 0;
+
         touchDown = false;
+        previousHeight = transform.position.y;
+        previousTargetVector = computeTargetVector();
+        //previousDistance = (transform.position - arena.platform.transform.position).magnitude;
+        previousDistanceReward = ComputeDistanceReward();
+        //SetReward(0.0f);
+        SetReward(previousDistanceReward);
+
+        foreach (GameObject leg in legs)
+        {
+            leg.GetComponent<LegSensor>().Reset();
+        }
+
+
+        previousPitch = -Mathf.Asin(transform.InverseTransformDirection(Vector3.up).z);
+        previousRoll = -Mathf.Asin(transform.InverseTransformDirection(Vector3.up).x);
+
+        nLegsTouching = 0;
     }
+
+    //private void KillMomentum()
+    //{
+    //    GetComponent<Rigidbody>().velocity = Vector3.zero;
+    //    GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+    //}
 
     // Update is called once per frame
     void Update()
     {
-        if (showEffects && currentFuel > 0)
-        {
-            SetEffects(thrust);
-        } else
-        {
-            SetEffects(0.0f);
-        }
-
         if (transform.position.y < 100)
         {
             if (legsDeployed == false)
@@ -156,13 +200,11 @@ public class LanderAgent : RocketAgent
     {
         if (GetComponent<BehaviorParameters>().BehaviorType == BehaviorType.HeuristicOnly)
         {
-            // if exclusively using heuristic, fetch inputs every update
             RequestDecision();
-            RequestAction();
         } else
         {
-            // otherwise only every third update
-            if (StepCount % 3 == 0)
+            // otherwise only every second update
+            if (StepCount % 2 == 0)
             {
                 RequestDecision();
             }
@@ -173,8 +215,8 @@ public class LanderAgent : RocketAgent
         }
 
 
-        // turn motor
-        thrustPoint.transform.localRotation = Quaternion.Euler(-inputY * maxEngineAngle, 0, inputX * maxEngineAngle);
+            // turn motor
+            thrustPoint.transform.localRotation = Quaternion.Euler(-inputY * maxEngineAngle, 0, inputX * maxEngineAngle);
         // turn grid fins
         foreach (GameObject fin in gridFins)
         {
@@ -214,29 +256,110 @@ public class LanderAgent : RocketAgent
             }
         }
 
+        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
+        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
+        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
+
+        //AddReward(-0.1f * Mathf.Max(0, GetComponent<Rigidbody>().velocity.y * Time.deltaTime));
+
+        float distanceReward = ComputeDistanceReward();
+
+        //AddReward(ComputeDistanceReward() * Time.deltaTime);
+
+        AddReward(distanceReward - previousDistanceReward);
+        previousDistanceReward = distanceReward;
+
+        int legsOnGround = 0;
+        //float legsOnGroundScore = 0f;
+
+        foreach (GameObject leg in legs)
+        {
+            if (leg.GetComponent<LegSensor>().OnPad()) // || leg.GetComponent<LegSensor>().OnGround())
+            {
+                legsOnGround += 1;
+            }
+        }
+        //        legsOnGroundScore += 0.5f;
+        //    } else if (leg.GetComponent<LegSensor>().OnGround())
+        //    {
+        //        legsOnGround += 1;
+        //        legsOnGroundScore += 0.25f;
+        //    }
+        //}
+
+        AddReward((legsOnGround - nLegsTouching) * 5);
+
+        nLegsTouching = legsOnGround;
+
+        //AddReward(legsOnGroundScore * Time.deltaTime);
+        float height = transform.position.y;
+
+        //float limitCeiling = 100;
+        //float maxSpeed = 50f;
+
+        if (height < limitCeiling && height > 0)
+        {
+            float effectiveHeight = height / limitCeiling;
+            speedLimit = speedLimitCurve.Evaluate(effectiveHeight) * maxSpeed;
+        }
+        else
+        {
+            speedLimit = 0;
+        }
+
+        //Debug.Log(GetComponent<Rigidbody>().velocity.magnitude - speedLimit);
+
+        float speedDifference = GetComponent<Rigidbody>().velocity.magnitude - speedLimit;
+
+        //AddReward(-0.5f * Mathf.Log(Mathf.Max(0f, previousHeight - height) * Mathf.Max(0f, GetComponent<Rigidbody>().velocity.magnitude - speedLimit) + 1, 10));
+        //AddReward(0.01f * Mathf.Max(0f, previousHeight - height));
+
+        float transformedSpeedReward = -0.15f * Mathf.Max(0f, previousHeight - height) * Sigmoid(speedDifference, 0.2f);
+        //float transformedSpeedReward = -0.5f * Time.deltaTime * Sigmoid(speedDifference, 0.5f);
+
+        if (height < limitCeiling && height > 0) // && height < previousHeight)
+        {
+            AddReward(transformedSpeedReward);
+        }
+
+        //punishment for going up
+        //AddReward(-1f * Mathf.Max(0, GetComponent<Rigidbody>().velocity.y * Time.deltaTime));
+
+        if (GetComponent<Rigidbody>().velocity.y > 5.0f && transform.position.y > 30)
+        {
+            Debug.Log("started going up");
+            AddReward(-10f);
+            EndEpisode();
+        }
+
+        //Debug.Log("speed limit: " + speedLimit);
+        //Debug.Log("speed difference: " + transformedSpeedReward);
+
+            previousHeight = height;
+
         thrust = thrustCurve.Evaluate(thrustInput);
 
-        if (thrust > 0 && currentFuel > 0)
+        if (thrust > 0 && currentFuel > 0 && touchDown == false)
         {
-            // consume fuel
-            currentFuel = currentFuel - Time.deltaTime * thrust;
-            // add punishment for using fuel
-            AddReward(-thrust * Time.deltaTime);
+            if (showEffects)
+            {
+                SetEffects(thrust);
+            }
 
             GetComponent<Rigidbody>().mass = dryMass + fuelMass * currentFuel / maxFuel;
             GetComponent<Rigidbody>().AddForceAtPosition(thrustPoint.transform.up * thrust * thrustForce * Time.deltaTime, thrustPoint.transform.position, ForceMode.Impulse);
+        } else
+        {
+            SetEffects(0.0f);
         }
 
-        // set reward according to current distance to target
-        Vector3 targetVector = landingPad.transform.position - thrustPoint.transform.position;
-        float distanceToTarget = targetVector.magnitude;
-        // a linear and inverse component
-        float inverseRewardComponent = 100 * 1 / Mathf.Max(1f, Mathf.Sqrt(distanceToTarget));
-        float xyDistanceComponent = -Mathf.Sqrt(Mathf.Pow(targetVector.x, 2) + Mathf.Pow(targetVector.z, 2) + Mathf.Pow(0.01f * targetVector.y, 2));
-        //Debug.Log(distanceToTarget);
-        float distanceReward = inverseRewardComponent + xyDistanceComponent;
-        AddReward(distanceReward - previousDistanceReward);
-        previousDistanceReward = distanceReward;
+        if (Vector3.Angle(transform.up, Vector3.up) > 100 && touchDown == false)
+        {
+            //Debug.Log("tilted");
+            AddReward(-20);
+            //KillMomentum();
+            EndEpisode();
+        }
     }
 
     public override void Heuristic(float[] actionsOut)
@@ -251,62 +374,115 @@ public class LanderAgent : RocketAgent
 
     public override void CollectObservations(VectorSensor sensor) 
     {
-        Vector3 targetDelta = landingPad.transform.position - thrustPoint.transform.position;
-        float logX = Mathf.Sign(targetDelta.x) * Mathf.Log(Mathf.Abs(targetDelta.x) + 1);
-        float logY = Mathf.Sign(targetDelta.y) * Mathf.Log(Mathf.Abs(targetDelta.y) + 1);
-        float logZ = Mathf.Sign(targetDelta.z) * Mathf.Log(Mathf.Abs(targetDelta.z) + 1);
+        // Target distance stuff
+        Vector3 targetVector = computeTargetVector();
+        //Debug.Log("delta time: " + Time.deltaTime);
+        Vector3 deltaTargetVector = (targetVector - previousTargetVector) / Mathf.Max(1e-4f, Time.deltaTime);
+        previousTargetVector = targetVector;
 
-        Vector3 logTargetDelta = new Vector3(logX, logY, logZ);
-        Vector3 upVector = GetComponent<Transform>().up;
-        Vector3 angularVelocity = GetComponent<Rigidbody>().angularVelocity;
-        Vector3 velocityVector = GetComponent<Rigidbody>().velocity * 0.01f;
+        // scale this to be smaller
+        targetVector *= 0.01f;
+        deltaTargetVector *= 0.01f;
 
-        sensor.AddObservation(logTargetDelta);
-        sensor.AddObservation(velocityVector);
-        sensor.AddObservation(angularVelocity);
-        sensor.AddObservation(upVector);
-    }
+        // Pitch stuff
+        float pitch = - Mathf.Asin(transform.InverseTransformDirection(Vector3.up).z);
+        float roll = - Mathf.Asin(transform.InverseTransformDirection(Vector3.up).x);
+        float deltaPitch = (pitch - previousPitch) / Mathf.Max(1e-4f, Time.deltaTime);
+        float deltaRoll = (roll - previousRoll) / Mathf.Max(1e-4f, Time.deltaTime);
+        previousPitch = pitch;
+        previousRoll = roll;
 
-    void OnCollisionEnter(Collision collider)
-    {
-        if (collider.gameObject.tag == "ground" || collider.gameObject.tag == "Finish")
-        {
-            float collisionVelocity = collider.relativeVelocity.magnitude;
-            float punishment = -5f * collisionVelocity;
+        // OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS
+        // OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS
+        // OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS
+        // OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS
+        // OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS OBSERVATIONS
 
-            //Debug.Log("body collided with speed: " + collisionVelocity + " and incurred punishment " + punishment);
-            AddReward(punishment);
-            if (touchDown == false)
-            {
-                EndEpisode();   
-            }
-        }
+        //Debug.Log("target vector: " + targetVector);
+        //Debug.Log("target vector delta: " + deltaTargetVector);
+
+        sensor.AddObservation(targetVector);
+        sensor.AddObservation(deltaTargetVector);
+
+        sensor.AddObservation(pitch);
+        sensor.AddObservation(roll);
+        sensor.AddObservation(deltaRoll);
+        sensor.AddObservation(deltaPitch);
+
+        //sensor.AddObservation(touchDown ? -1f : 1f);
+
+        //Debug.Log(touchDown ? 1f: -1f);
     }
 
     public void CollisionDetected(Collision lc)
     {
+        //float slamSpeedLimit = Academy.Instance.EnvironmentParameters.GetWithDefault("slam_speed", 10.0f);
+
         if (lc.gameObject.tag == "ground" || lc.gameObject.tag == "Finish")
         {
-            float collisionVelocity = lc.relativeVelocity.magnitude;
-            float punishment = -0.5f * Mathf.Max(lc.relativeVelocity.magnitude - 1, 0);
+            //float collisionVelocity = lc.relativeVelocity.magnitude;
+            //float punishment = -Mathf.Max(lc.relativeVelocity.magnitude - slamSpeedLimit, 0) / slamSpeedLimit;
 
-            //Debug.Log("child collided with speed: " + collisionVelocity + " and incurred punishment " + punishment);
-            AddReward(punishment);
+            // Debug.Log("leg collided with speed: " + collisionVelocity + " and incurred punishment " + punishment);
+            //AddReward(punishment);
 
-            // end episode 4 seconds after first touchdown
+            // end episode 10 seconds after first touchdown
             if (touchDown == false)
             {
                 touchDown = true;
-                Invoke("EndEpisode", 4);
 
-                // reward for landing on the landing pad
-                if (lc.gameObject.tag == "Finish")
+                // add punishment if the first touchdown exceeds speed limit
+                //float collisionVelocity = GetComponent<Rigidbody>().velocity.magnitude;
+                //float punishment = -(1 + Vector3.Angle(transform.up, Vector3.up) / 9) * Mathf.Max(collisionVelocity - slamSpeedLimit, 0) / slamSpeedLimit;
+                //float reward = (10 - collisionVelocity); //Mathf.Pow(1 - Vector3.Angle(transform.up, Vector3.up) / 90, 3);
+
+                float collisionVelocity = lc.relativeVelocity.magnitude;
+
+                // add reward for landing slowly
+                AddReward(30 * 3 / Mathf.Max(collisionVelocity, 3));
+
+                //Debug.Log("touchdown reward: " + reward);
+                Debug.Log("touchdown speed: " + collisionVelocity);
+
+                //Invoke("KillMomentum", 10);
+                if (resetOnTouchdown == true)
                 {
-                    Debug.Log("Touched down on the landing pad");
-                    AddReward(50);
+                    Invoke("EndEpisode", 5);
                 }
             }
         }
+    }
+
+    private float ComputeDistanceReward()
+    {
+        //Vector3 weightedPosition = Vector3.Scale(transform.position - arena.platform.transform.position + new Vector3(0, -15, 0), new Vector3(1, 0.4f, 1));
+        Vector3 targetDelta = transform.position - arena.platform.transform.position;
+
+        Vector2 horizontalDistance = new Vector2(targetDelta.x, targetDelta.z);
+
+        float distanceReward = 150f / Mathf.Sqrt(Mathf.Max(9, horizontalDistance.magnitude));
+
+        //Debug.Log(distanceReward);
+
+        //Debug.Log("distance reward: " + weightedPosition);
+        //Debug.Log("distance reward: " + distanceReward);
+
+        return distanceReward;
+    }
+
+    private Vector3 computeTargetVector()
+    {
+        Vector3 horizontalForward = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
+        Vector3 horizontalRight = new Vector3(transform.right.x, 0, transform.right.z).normalized;
+
+        //Debug.Log("forward: " + horizontalForward);
+        //Debug.Log("right: " + horizontalRight);
+
+        float targetDistanceForward = Vector3.Dot(landingPad.transform.position - transform.position, horizontalForward);
+        float targetDistanceRight = Vector3.Dot(landingPad.transform.position - transform.position, horizontalRight);
+        float targetDistanceVertical = (landingPad.transform.position - transform.position).y;
+
+        return new Vector3(targetDistanceRight, targetDistanceVertical, targetDistanceForward);
     }
 
     void SetEffects(float magnitude)
@@ -376,6 +552,22 @@ public class LanderAgent : RocketAgent
         }
     }
 
+    private void ToggleAI()
+    {
+        if (usingAI)
+        {
+            GetComponent<BehaviorParameters>().BehaviorType = BehaviorType.HeuristicOnly;
+            usingAI = false;
+            EndEpisode();
+        }
+        else
+        {
+            GetComponent<BehaviorParameters>().BehaviorType = BehaviorType.Default;
+            usingAI = true;
+            EndEpisode();
+        }
+    }
+
     public override Vector2 GetXYInputs()
     {
         return new Vector2(inputX, inputY);
@@ -398,5 +590,30 @@ public class LanderAgent : RocketAgent
     public override void Refuel()
     {
         currentFuel = startingFuel * maxFuel;
+    }
+
+    public override bool IsUsingAI()
+    {
+        return usingAI;
+    }
+
+    private static float Sigmoid(float x, float steepness)
+    {
+        return (1.0f / (1.0f + Mathf.Exp(-x * steepness)) - 0.5f) * 2.0f;
+    }
+
+    private static float WeirdSigmoid(float x)
+    {
+        return (1.0f / (1.0f + Mathf.Exp(-x * 0.5f)) - 0.5f) * 2.0f / (1.0f + Mathf.Exp(-x * 0.1f - 2f));
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawRay(transform.position, transform.TransformVector(previousTargetVector.normalized) * 10);
+        //Gizmos.DrawRay(transform.position, horizontalForward * 10);
+        //Gizmos.DrawRay(transform.position, horizontalRight * 10);
+        //Gizmos.color = Color.yellow;
+        //Gizmos.DrawRay(transform.position, (landingPad.transform.position - transform.position).normalized * 20);
     }
 }

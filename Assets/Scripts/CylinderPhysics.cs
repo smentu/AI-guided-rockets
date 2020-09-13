@@ -21,7 +21,7 @@ public class CylinderPhysics : MonoBehaviour
         length = mesh.bounds.extents.y * transform.localScale.y * 2.0f;
         radius = mesh.bounds.extents.x * transform.localScale.x;
 
-        Debug.Log("rocket dimensions are" + GetDims());
+        //Debug.Log("rocket dimensions are" + GetDims());
         gameObject.GetComponent<Rigidbody>().centerOfMass = cgOffset;
     }
 
