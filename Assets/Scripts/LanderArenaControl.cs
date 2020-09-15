@@ -182,14 +182,17 @@ public class LanderArenaControl : MonoBehaviour
 
         playerAgent.Refuel();
 
-        if (player.GetComponent<RocketAgent>().IsUsingAI())
+        if (title)
         {
-            title.GetComponent<TextMeshProUGUI>().text = "Control:\tAI";
-            infoBG.GetComponent<Image>().color = new Color32(0x00, 0x40, 0xFD, 0xFF);
-        } else
-        {
-            title.GetComponent<TextMeshProUGUI>().text = "Control:\tPlayer";
-            infoBG.GetComponent<Image>().color = new Color32(0x33, 0x33, 0x33, 0xFF);
+            if (player.GetComponent<RocketAgent>().IsUsingAI())
+            {
+                title.GetComponent<TextMeshProUGUI>().text = "Control:\tAI";
+                infoBG.GetComponent<Image>().color = new Color32(0x00, 0x40, 0xFD, 0xFF);
+            } else
+            {
+                title.GetComponent<TextMeshProUGUI>().text = "Control:\tPlayer";
+                infoBG.GetComponent<Image>().color = new Color32(0x33, 0x33, 0x33, 0xFF);
+            }
         }
         
     }

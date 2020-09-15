@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using System.Collections.Generic;
 using Unity.MLAgents.Policies;
+using System.Collections;
 
 public class LanderAgent : RocketAgent
 {
@@ -14,8 +14,6 @@ public class LanderAgent : RocketAgent
     public float maxGridFinAngle = 20f;
     [Tooltip("Where the thrust force is applied")]
     public GameObject thrustPoint;
-    [Tooltip("Whether to produce rocket effects")]
-    public bool showEffects = false;
     [Tooltip("Whether to reset automatically after hitting ground")]
     public bool resetOnTouchdown = true;
 
@@ -31,6 +29,13 @@ public class LanderAgent : RocketAgent
     public float limitCeiling = 150;
     public float maxSpeed = 30f;
     public AnimationCurve speedLimitCurve;
+
+    [Header("effects")]
+    public AudioSource rocketEngineSound;
+    public AudioSource rocketEngineShutoffSound;
+    public AudioSource bodyBonk;
+    [Tooltip("Whether to produce rocket effects")]
+    public bool showEffects = false;
 
     private GameObject landingPad;
     private float currentFuel;
@@ -167,6 +172,8 @@ public class LanderAgent : RocketAgent
         previousRoll = -Mathf.Asin(transform.InverseTransformDirection(Vector3.up).x);
 
         nLegsTouching = 0;
+
+        rocketEngineSound.volume = 0.0f;
     }
 
     //private void KillMomentum()
@@ -327,10 +334,11 @@ public class LanderAgent : RocketAgent
         //punishment for going up
         //AddReward(-1f * Mathf.Max(0, GetComponent<Rigidbody>().velocity.y * Time.deltaTime));
 
-        if (GetComponent<Rigidbody>().velocity.y > 5.0f && transform.position.y > 30)
+        if (GetComponent<Rigidbody>().velocity.y > 5.0f && transform.position.y > 20)
         {
             Debug.Log("started going up");
-            AddReward(-10f);
+            //AddReward(-10f);
+            AddReward(-transform.position.y / 4f);
             EndEpisode();
         }
 
@@ -343,6 +351,10 @@ public class LanderAgent : RocketAgent
 
         if (thrust > 0 && currentFuel > 0 && touchDown == false)
         {
+            // sound
+            rocketEngineSound.volume = thrust;
+            rocketEngineSound.pitch = 0.5f * thrust + 0.5f;
+
             if (showEffects)
             {
                 SetEffects(thrust);
@@ -432,6 +444,10 @@ public class LanderAgent : RocketAgent
             if (touchDown == false)
             {
                 touchDown = true;
+                StartCoroutine(StartFade(rocketEngineSound, 0.5f, 0.0f));
+                //rocketEngineSound.volume = 0;
+                rocketEngineShutoffSound.volume = rocketEngineSound.volume / 10;
+                rocketEngineShutoffSound.Play();
 
                 // add punishment if the first touchdown exceeds speed limit
                 //float collisionVelocity = GetComponent<Rigidbody>().velocity.magnitude;
@@ -441,10 +457,12 @@ public class LanderAgent : RocketAgent
                 float collisionVelocity = lc.relativeVelocity.magnitude;
 
                 // add reward for landing slowly
-                AddReward(30 * 3 / Mathf.Max(collisionVelocity, 3));
+                //AddReward(30 * 3 / Mathf.Max(collisionVelocity, 3));
+                float touchDownReward = Mathf.Max(40 - collisionVelocity, 0) / 2;
+                AddReward(touchDownReward);
 
                 //Debug.Log("touchdown reward: " + reward);
-                Debug.Log("touchdown speed: " + collisionVelocity);
+                Debug.Log("touchdown speed: " + collisionVelocity + ", reward: " + touchDownReward);
 
                 //Invoke("KillMomentum", 10);
                 if (resetOnTouchdown == true)
@@ -617,5 +635,26 @@ public class LanderAgent : RocketAgent
         //Gizmos.DrawRay(transform.position, horizontalRight * 10);
         //Gizmos.color = Color.yellow;
         //Gizmos.DrawRay(transform.position, (landingPad.transform.position - transform.position).normalized * 20);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("body hit ground with velocity: " + collision.relativeVelocity.magnitude);
+        bodyBonk.volume = Mathf.Min(1, collision.relativeVelocity.magnitude / 40f);
+        bodyBonk.Play();
+    }
+
+    public static IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
+    {
+        float currentTime = 0;
+        float start = audioSource.volume;
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
+            yield return null;
+        }
+        yield break;
     }
 }

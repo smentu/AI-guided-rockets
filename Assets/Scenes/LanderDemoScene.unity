@@ -137,6 +137,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1746871044256136445}
   m_PrefabAsset: {fileID: 0}
+--- !u!82 &385430924 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7499561719244160212, guid: 548461d296eb4f845a3e1d675fb2f2db,
+    type: 3}
+  m_PrefabInstance: {fileID: 1746871044256136445}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &459388779
 GameObject:
   m_ObjectHideFlags: 0
@@ -204,6 +210,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5579243602987344713, guid: 47d3401410340c84f8c5fcef1e006032,
     type: 3}
   m_PrefabInstance: {fileID: 1404513903}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &553111610 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 582605310497556839, guid: 548461d296eb4f845a3e1d675fb2f2db,
+    type: 3}
+  m_PrefabInstance: {fileID: 1746871044256136445}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &634561425 stripped
 GameObject:
@@ -296,7 +308,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 876342879}
   m_LocalRotation: {x: 0.26733702, y: -0, z: -0, w: 0.9636031}
-  m_LocalPosition: {x: 0, y: 27.93, z: -23.86}
+  m_LocalPosition: {x: 0, y: 3.71, z: -5.21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -384,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2902496c0120472b90269f94a0aec7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Record: 1
+  Record: 0
   DemonstrationName: demo_01
   DemonstrationDirectory: C:\Users\sante\repos\unity_robot_rockets\Assets\ML-Agents\Examples\Lander\Demos
 --- !u!1001 &1404513903
@@ -726,7 +738,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1599962201}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: -34.25, y: 15.42, z: -2.68}
+  m_LocalPosition: {x: -112.1, y: 15.42, z: -2.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -897,6 +909,21 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 582605310497556839, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.224
+      objectReference: {fileID: 0}
+    - target: {fileID: 582605310497556839, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: m_Pitch
+      value: 0.86
+      objectReference: {fileID: 0}
+    - target: {fileID: 582605310497556839, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: rolloffMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: showEffects
@@ -922,6 +949,16 @@ PrefabInstance:
       propertyPath: speedLimitCurve.m_Curve.Array.data[0].outSlope
       value: 0.49908796
       objectReference: {fileID: 0}
+    - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: rocketEngineSound
+      value: 
+      objectReference: {fileID: 385430924}
+    - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: rocketEngineShutoffSound
+      value: 
+      objectReference: {fileID: 553111610}
     - target: {fileID: 1746871045857688612, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_Name
@@ -1022,6 +1059,21 @@ PrefabInstance:
       propertyPath: infoBG
       value: 
       objectReference: {fileID: 52077667}
+    - target: {fileID: 1746871045857688615, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: speedVariance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746871045857688615, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: startingHeight
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3668119474232243501, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: m_Name
+      value: EngineSound
+      objectReference: {fileID: 0}
     - target: {fileID: 4207475721978973588, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_Enabled
@@ -1032,16 +1084,46 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7499561719244160212, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: Mute
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7499561719244160212, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: BypassEffects
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7499561719244160212, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: BypassReverbZones
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7499561719244160212, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7499561719244160212, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: rolloffMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7872347578917369724, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7964954068071731247, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: m_Name
+      value: EngineShutoffSound
+      objectReference: {fileID: 0}
     - target: {fileID: 8243245909436134675, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 0295b654d302007479fc1d1dd30afaf7,
+      objectReference: {fileID: 5022602860645237092, guid: 3611cc2c39bb2574bad52e7782584e27,
         type: 3}
     - target: {fileID: 8243245909436134675, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
