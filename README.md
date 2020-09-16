@@ -3,6 +3,6 @@ The project aims to teach a virtual rocket how to land itself like the SpaceX Fa
 
 ![Image of lander in flight](lander_screenshot.png)
 
-You can see a video of the rocket scenario by clicking on the image below
+You can see a video of the lander by clicking on the image below.
 
-[![Image showing rocket](https://img.youtube.com/vi/_cludcqYhPU/0.jpg)](https://www.youtube.com/watch?v=_cludcqYhPU)
+[![Image showing rocket](https://img.youtube.com/vi/Alwvvs_q3G8/0.jpg)](https://www.youtube.com/watch?v=Alwvvs_q3G8)
