@@ -8,6 +8,7 @@ public class GridFinPhysics : MonoBehaviour
     private float sizeX;
     private float sizeZ;
     private float sizeY;
+    private bool deployed;
 
     // surface area perpendicular to X and Z
     private float surfaceX;
@@ -29,6 +30,8 @@ public class GridFinPhysics : MonoBehaviour
         surfaceZ = sizeY * sizeX;
 
         //Debug.Log(GetDims());
+
+        deployed = true;
     }
 
     public Vector3 GetDims()
@@ -39,25 +42,35 @@ public class GridFinPhysics : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector3 velocity = GetComponent<Rigidbody>().velocity;
-        Vector3 direction = velocity.normalized;
-        float vsquared = Mathf.Pow(velocity.magnitude, 2);
+        if (deployed)
+        {
+            //Debug.Log("computing grid fin physics");
 
-        float zAngle = Vector3.Dot(direction, transform.right);
-        float xAngle = Vector3.Dot(direction, transform.forward);
-        float crossSectionMultiplier = 1 + Mathf.Abs(Vector3.Dot(direction, transform.up)) * nFins;
+            Vector3 velocity = GetComponent<Rigidbody>().velocity;
+            Vector3 direction = velocity.normalized;
+            float vsquared = Mathf.Pow(velocity.magnitude, 2);
 
-        //Debug.Log("spuff");
-        //Debug.Log(crossSectionMultiplier);
+            float zAngle = Vector3.Dot(direction, transform.right);
+            float xAngle = Vector3.Dot(direction, transform.forward);
+            float crossSectionMultiplier = 1 + Mathf.Abs(Vector3.Dot(direction, transform.up)) * nFins;
 
-        float perpendicularForceX = - liftCoefficient * zAngle * surfaceX * crossSectionMultiplier * vsquared;
-        float perpendicularForceZ = - liftCoefficient * xAngle * surfaceZ * crossSectionMultiplier * vsquared;
-        float drag = -0.05f * sizeX * sizeZ * Vector3.Dot(direction, transform.up) * vsquared * dragCoefficient;
+            //Debug.Log("spuff");
+            //Debug.Log(crossSectionMultiplier);
 
-        forceVector = new Vector3(perpendicularForceX, drag, perpendicularForceZ);
-        //Vector3 forceVector = transform.up * 10f;
+            float perpendicularForceX = - liftCoefficient * zAngle * surfaceX * crossSectionMultiplier * vsquared;
+            float perpendicularForceZ = - liftCoefficient * xAngle * surfaceZ * crossSectionMultiplier * vsquared;
+            float drag = -0.05f * sizeX * sizeZ * Vector3.Dot(direction, transform.up) * vsquared * dragCoefficient;
 
-        GetComponent<Rigidbody>().AddForce(transform.rotation * forceVector);
+            forceVector = new Vector3(perpendicularForceX, drag, perpendicularForceZ);
+            //Vector3 forceVector = transform.up * 10f;
+
+            GetComponent<Rigidbody>().AddForce(transform.rotation * forceVector);
+        }
+    }
+
+    public void SetDeployment(bool value)
+    {
+        deployed = value;
     }
 
     void OnDrawGizmos()

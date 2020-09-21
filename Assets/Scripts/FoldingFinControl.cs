@@ -19,6 +19,9 @@ public class FoldingFinControl : MonoBehaviour
     {
         //Debug.Log("set fins to " + deployed);
         JointSpring foldSpring = GetComponent<HingeJoint>().spring;
+
+        fin.GetComponent<GridFinPhysics>().SetDeployment(deployed);
+
         if (deployed)
         {
             foldSpring.targetPosition = 0;
@@ -26,7 +29,7 @@ public class FoldingFinControl : MonoBehaviour
         } else
         {
             foldSpring.targetPosition = -90;
-            fin.GetComponent<GridFinPhysics>().liftCoefficient = dragCoefficient;
+            //fin.GetComponent<GridFinPhysics>().liftCoefficient = dragCoefficient;
         }
         GetComponent<HingeJoint>().spring = foldSpring;
         isDeployed = deployed;

@@ -3,6 +3,7 @@ using Unity.MLAgents.Sensors;
 using System.Collections.Generic;
 using Unity.MLAgents.Policies;
 using System.Collections;
+using UnityEngine.UIElements;
 
 public class LanderAgent : RocketAgent
 {
@@ -26,9 +27,9 @@ public class LanderAgent : RocketAgent
     [Range(0.0f, 1.0f)]
     public float startingFuel;
     public AnimationCurve thrustCurve;
-    public float limitCeiling = 150;
-    public float maxSpeed = 30f;
-    public AnimationCurve speedLimitCurve;
+    //public float limitCeiling = 150;
+    //public float maxSpeed = 30f;
+    //public AnimationCurve speedLimitCurve;
 
     [Header("effects")]
     public AudioSource rocketEngineSound;
@@ -37,10 +38,10 @@ public class LanderAgent : RocketAgent
     [Tooltip("Whether to produce rocket effects")]
     public bool showEffects = false;
 
-    private GameObject landingPad;
+    private Vector3 target;
     private float currentFuel;
     private bool touchDown;
-    private float previousHeight;
+    //private float previousHeight;
     private float previousPitch;
     private float previousRoll;
     private Vector3 previousTargetVector;
@@ -52,9 +53,10 @@ public class LanderAgent : RocketAgent
     private float inputY;
     private float thrust;
     private bool legsDeployed = false;
-    private float speedLimit;
+    //private float speedLimit;
     private int nLegsTouching;
     private bool usingAI;
+    private bool insideTargetVolume = false;
     //private bool gridFinsDeployed = false;
 
     // lander child components
@@ -62,7 +64,6 @@ public class LanderAgent : RocketAgent
     private List<GameObject> gridFins;
     private List<ParticleSystem> rocketEffects;
     public LanderArenaControl arena;
-    //private GameObject coneOrigin;
 
     // player inputs
     private Vector2 move;
@@ -74,8 +75,16 @@ public class LanderAgent : RocketAgent
         currentFuel = maxFuel;
         arena = GetComponentInParent<LanderArenaControl>();
 
-        landingPad = arena.platform;
-        //initialDistance = (thrustPoint.transform.position - landingPad.transform.position).magnitude;
+        if (arena.training)
+        {
+            target = arena.targetVolume.transform.position;
+        }
+        else
+        {
+            target = arena.platform.transform.position + new Vector3(0, 15, 0);
+        }
+
+        //initialDistance = (thrustPoint.transform.position - target.transform.position).magnitude;
 
         // collect and categorize legs and grid fins
         legs = new List<GameObject>();
@@ -102,8 +111,6 @@ public class LanderAgent : RocketAgent
             //Debug.Log("found particle system: " + ps.name);
             rocketEffects.Add(ps);
         }
-
-        //coneOrigin = arena.coneOrigin;
     }
 
     public void Awake()
@@ -131,8 +138,6 @@ public class LanderAgent : RocketAgent
 
     public override void OnActionReceived(float[] vectorAction)
     {
-        //inputX = Mathf.Sign(vectorAction[0]) * Mathf.Abs(Mathf.Pow(vectorAction[0], 2));
-        //inputY = Mathf.Sign(vectorAction[1]) * Mathf.Abs(Mathf.Pow(vectorAction[1], 2));
         inputX = vectorAction[0];
         inputY = vectorAction[1];
         // normalize thrust input to between 0 and 1
@@ -149,18 +154,18 @@ public class LanderAgent : RocketAgent
         ResetEffects();
         SetEffects(0.0f);
 
-        //initialDistance = (thrustPoint.transform.position - landingPad.transform.position).magnitude;
+        //initialDistance = (thrustPoint.transform.position - target.transform.position).magnitude;
         //Debug.Log("the initial distance is: " + initialDistance);
 
         thrustInput = 0;
 
         touchDown = false;
-        previousHeight = transform.position.y;
+        //previousHeight = transform.position.y;
         previousTargetVector = computeTargetVector();
         //previousDistance = (transform.position - arena.platform.transform.position).magnitude;
         previousDistanceReward = ComputeDistanceReward();
-        //SetReward(0.0f);
-        SetReward(previousDistanceReward);
+        SetReward(0.0f);
+        //SetReward(previousDistanceReward);
 
         foreach (GameObject leg in legs)
         {
@@ -295,57 +300,66 @@ public class LanderAgent : RocketAgent
         //}
 
         AddReward((legsOnGround - nLegsTouching) * 5);
-
         nLegsTouching = legsOnGround;
 
+        if (insideTargetVolume)
+        {
+            //Debug.Log("inside target volume");
+            AddReward(5f * Time.deltaTime);
+        }
+
+        //AddReward(5 * (Sigmoid(transform.position.y, 1.0f) - 1.0f) * Time.deltaTime);
+        AddReward(-Mathf.Log10(Mathf.Max(0, -transform.position.y) + 1) * Time.deltaTime);
+
         //AddReward(legsOnGroundScore * Time.deltaTime);
-        float height = transform.position.y;
+        //float height = transform.position.y;
 
         //float limitCeiling = 100;
         //float maxSpeed = 50f;
-        float heightMultiplier = 1;
+        //float heightMultiplier = 1;
 
-        if (height < limitCeiling && height > 0)
-        {
-            float effectiveHeight = height / limitCeiling;
-            speedLimit = speedLimitCurve.Evaluate(effectiveHeight) * maxSpeed;
-            heightMultiplier = 1 - height / limitCeiling;
-        }
-        else
-        {
-            speedLimit = 0;
-        }
+        //if (height < limitCeiling && height > 10)
+        //{
+        //    float effectiveHeight = height / limitCeiling;
+        //    speedLimit = speedLimitCurve.Evaluate(effectiveHeight) * maxSpeed;
+        //    heightMultiplier = 1.5f - height / limitCeiling;
+        //}
+        //else
+        //{
+        //    speedLimit = 0;
+        //}
 
         //Debug.Log(GetComponent<Rigidbody>().velocity.magnitude - speedLimit);
 
-        float speedDifference = GetComponent<Rigidbody>().velocity.magnitude - speedLimit;
+        //float speedDifference = GetComponent<Rigidbody>().velocity.magnitude - speedLimit;
 
-        //AddReward(-0.5f * Mathf.Log(Mathf.Max(0f, previousHeight - height) * Mathf.Max(0f, GetComponent<Rigidbody>().velocity.magnitude - speedLimit) + 1, 10));
-        //AddReward(0.01f * Mathf.Max(0f, previousHeight - height));
+        ////AddReward(-0.5f * Mathf.Log(Mathf.Max(0f, previousHeight - height) * Mathf.Max(0f, GetComponent<Rigidbody>().velocity.magnitude - speedLimit) + 1, 10));
+        ////AddReward(0.01f * Mathf.Max(0f, previousHeight - height));
 
-        float transformedSpeedReward = -0.3f * heightMultiplier * Mathf.Max(0f, previousHeight - height) * Sigmoid(speedDifference, 0.2f);
-        //float transformedSpeedReward = -0.5f * Time.deltaTime * Sigmoid(speedDifference, 0.5f);
+        //float transformedSpeedReward = -0.2f * heightMultiplier * Mathf.Max(0f, previousHeight - height) * Sigmoid(speedDifference, 0.2f);
+        ////float transformedSpeedReward = -0.5f * Time.deltaTime * Sigmoid(speedDifference, 0.5f);
 
-        if (height < limitCeiling && height > 0) // && height < previousHeight)
-        {
-            AddReward(transformedSpeedReward);
-        }
+        //if (height < limitCeiling && height > 0) // && height < previousHeight)
+        //{
+        //    AddReward(transformedSpeedReward);
+        //}
 
         //punishment for going up
         //AddReward(-1f * Mathf.Max(0, GetComponent<Rigidbody>().velocity.y * Time.deltaTime));
 
-        if (GetComponent<Rigidbody>().velocity.y > 5.0f && transform.position.y > 20)
-        {
-            Debug.Log("started going up");
-            //AddReward(-10f);
-            AddReward(-transform.position.y / 4f);
-            EndEpisode();
-        }
+        //if (GetComponent<Rigidbody>().velocity.y > 10.0f && transform.position.y > 100)
+        //{
+        //    Debug.Log("started going up");
+        //    //AddReward(-10f);
+        //    //AddReward(-(transform.position.y - 15f) / 3f);
+        //    AddReward(-20);
+        //    EndEpisode();
+        //}
 
         //Debug.Log("speed limit: " + speedLimit);
         //Debug.Log("speed difference: " + transformedSpeedReward);
 
-            previousHeight = height;
+        //previousHeight = height;
 
         thrust = thrustCurve.Evaluate(thrustInput);
 
@@ -369,7 +383,7 @@ public class LanderAgent : RocketAgent
 
         if (Vector3.Angle(transform.up, Vector3.up) > 100 && touchDown == false)
         {
-            //Debug.Log("tilted");
+            Debug.Log("tilted");
             AddReward(-20);
             //KillMomentum();
             EndEpisode();
@@ -467,20 +481,40 @@ public class LanderAgent : RocketAgent
                 //Invoke("KillMomentum", 10);
                 if (resetOnTouchdown == true)
                 {
-                    Invoke("EndEpisode", 5);
+                    StartCoroutine(TouchdDownCountdown(5));
                 }
             }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.name == arena.targetVolume.name)
+        {
+            Debug.Log("Entered " + arena.targetVolume.name);
+            insideTargetVolume = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.name == arena.targetVolume.name)
+        {
+            Debug.Log("Exited " + arena.targetVolume.name);
+            insideTargetVolume = false;
         }
     }
 
     private float ComputeDistanceReward()
     {
         //Vector3 weightedPosition = Vector3.Scale(transform.position - arena.platform.transform.position + new Vector3(0, -15, 0), new Vector3(1, 0.4f, 1));
-        Vector3 targetDelta = transform.position - arena.platform.transform.position;
+        Vector3 targetDelta = transform.position - target;
 
-        Vector2 horizontalDistance = new Vector2(targetDelta.x, targetDelta.z);
+        //Vector2 horizontalDistance = new Vector2(targetDelta.x, targetDelta.z);
 
-        float distanceReward = 150f / Mathf.Sqrt(Mathf.Max(9, horizontalDistance.magnitude));
+        Vector3 weightedDistance = 0.3f * targetDelta; //* Vector3.Scale(new Vector3(1f, 0.5f, 1f), targetDelta);
+
+        float distanceReward = 75f / Mathf.Sqrt(Mathf.Max(4, weightedDistance.magnitude));
 
         //Debug.Log(distanceReward);
 
@@ -498,9 +532,9 @@ public class LanderAgent : RocketAgent
         //Debug.Log("forward: " + horizontalForward);
         //Debug.Log("right: " + horizontalRight);
 
-        float targetDistanceForward = Vector3.Dot(landingPad.transform.position - transform.position, horizontalForward);
-        float targetDistanceRight = Vector3.Dot(landingPad.transform.position - transform.position, horizontalRight);
-        float targetDistanceVertical = (landingPad.transform.position - transform.position).y;
+        float targetDistanceForward = Vector3.Dot(target - transform.position, horizontalForward);
+        float targetDistanceRight = Vector3.Dot(target - transform.position, horizontalRight);
+        float targetDistanceVertical = (target - transform.position).y;
 
         return new Vector3(targetDistanceRight, targetDistanceVertical, targetDistanceForward);
     }
@@ -619,7 +653,8 @@ public class LanderAgent : RocketAgent
 
     private static float Sigmoid(float x, float steepness)
     {
-        return (1.0f / (1.0f + Mathf.Exp(-x * steepness)) - 0.5f) * 2.0f;
+        //return (1.0f / (1.0f + Mathf.Exp(-x * steepness)) - 0.5f) * 2.0f;
+        return 1 / (1 + Mathf.Exp(-steepness * x));
     }
 
     private static float WeirdSigmoid(float x)
@@ -634,12 +669,12 @@ public class LanderAgent : RocketAgent
         //Gizmos.DrawRay(transform.position, horizontalForward * 10);
         //Gizmos.DrawRay(transform.position, horizontalRight * 10);
         //Gizmos.color = Color.yellow;
-        //Gizmos.DrawRay(transform.position, (landingPad.transform.position - transform.position).normalized * 20);
+        //Gizmos.DrawRay(transform.position, (target.transform.position - transform.position).normalized * 20);
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("body hit ground with velocity: " + collision.relativeVelocity.magnitude);
+        //Debug.Log("body hit ground with velocity: " + collision.relativeVelocity.magnitude);
         bodyBonk.volume = Mathf.Min(1, collision.relativeVelocity.magnitude / 40f);
         bodyBonk.Play();
     }
@@ -656,5 +691,24 @@ public class LanderAgent : RocketAgent
             yield return null;
         }
         yield break;
+    }
+
+    private IEnumerator TouchdDownCountdown(float duration)
+    {
+        float resetTime = Time.time + duration;
+
+        while (Time.time < resetTime)
+        {
+            if (touchDown == false)
+            {
+                yield break;
+            } else
+            {
+                yield return null;
+            }
+        }
+
+        Debug.Log("Ended episode with reward " + GetCumulativeReward());
+        EndEpisode();
     }
 }

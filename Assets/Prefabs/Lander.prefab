@@ -454,6 +454,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   rocketEngineSound: {fileID: 0}
   rocketEngineShutoffSound: {fileID: 0}
+  bodyBonk: {fileID: 0}
   showEffects: 0
   arena: {fileID: 0}
 --- !u!1 &6446350726156133214
@@ -1529,17 +1530,22 @@ PrefabInstance:
     - target: {fileID: 46702154518776031, guid: a0fd658fe65c1bb408fc033da6834cb9,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.39684495
+      value: 0.4891301
       objectReference: {fileID: 0}
     - target: {fileID: 46702154518776031, guid: a0fd658fe65c1bb408fc033da6834cb9,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.53871703
+      value: 0.66399413
       objectReference: {fileID: 0}
     - target: {fileID: 46702154518776031, guid: a0fd658fe65c1bb408fc033da6834cb9,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.39684495
+      value: 0.4891301
+      objectReference: {fileID: 0}
+    - target: {fileID: 46702154518776031, guid: a0fd658fe65c1bb408fc033da6834cb9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.42
       objectReference: {fileID: 0}
     - target: {fileID: 1117266736721495000, guid: a0fd658fe65c1bb408fc033da6834cb9,
         type: 3}
@@ -1609,17 +1615,22 @@ PrefabInstance:
     - target: {fileID: 4318576825399145657, guid: a0fd658fe65c1bb408fc033da6834cb9,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.87730855
+      value: 1.0724679
       objectReference: {fileID: 0}
     - target: {fileID: 4318576825399145657, guid: a0fd658fe65c1bb408fc033da6834cb9,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.2591132
+      value: 1.5392059
       objectReference: {fileID: 0}
     - target: {fileID: 4318576825399145657, guid: a0fd658fe65c1bb408fc033da6834cb9,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.87730855
+      value: 1.0724679
+      objectReference: {fileID: 0}
+    - target: {fileID: 4318576825399145657, guid: a0fd658fe65c1bb408fc033da6834cb9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.08
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0fd658fe65c1bb408fc033da6834cb9, type: 3}

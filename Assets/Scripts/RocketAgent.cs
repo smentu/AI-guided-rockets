@@ -27,7 +27,7 @@ public class RocketAgent : Agent
 
     public virtual void ResetEffects()
     {
-
+        
     }
 
     public virtual void Refuel()

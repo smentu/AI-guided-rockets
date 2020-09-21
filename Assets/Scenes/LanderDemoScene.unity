@@ -137,12 +137,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1746871044256136445}
   m_PrefabAsset: {fileID: 0}
---- !u!82 &385430924 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 7499561719244160212, guid: 548461d296eb4f845a3e1d675fb2f2db,
-    type: 3}
-  m_PrefabInstance: {fileID: 1746871044256136445}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &459388779
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,7 +154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &459388780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,12 +204,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5579243602987344713, guid: 47d3401410340c84f8c5fcef1e006032,
     type: 3}
   m_PrefabInstance: {fileID: 1404513903}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &553111610 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 582605310497556839, guid: 548461d296eb4f845a3e1d675fb2f2db,
-    type: 3}
-  m_PrefabInstance: {fileID: 1746871044256136445}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &634561425 stripped
 GameObject:
@@ -601,7 +589,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1474240743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -785,7 +773,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1813280660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -847,7 +835,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1923484300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -932,7 +920,7 @@ PrefabInstance:
     - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: MaxStep
-      value: 2000
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
@@ -949,16 +937,6 @@ PrefabInstance:
       propertyPath: speedLimitCurve.m_Curve.Array.data[0].outSlope
       value: 0.49908796
       objectReference: {fileID: 0}
-    - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
-        type: 3}
-      propertyPath: rocketEngineSound
-      value: 
-      objectReference: {fileID: 385430924}
-    - target: {fileID: 1746871043974917413, guid: 548461d296eb4f845a3e1d675fb2f2db,
-        type: 3}
-      propertyPath: rocketEngineShutoffSound
-      value: 
-      objectReference: {fileID: 553111610}
     - target: {fileID: 1746871045857688612, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_Name
@@ -1061,13 +1039,8 @@ PrefabInstance:
       objectReference: {fileID: 52077667}
     - target: {fileID: 1746871045857688615, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
-      propertyPath: speedVariance
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1746871045857688615, guid: 548461d296eb4f845a3e1d675fb2f2db,
-        type: 3}
-      propertyPath: startingHeight
-      value: 50
+      propertyPath: training
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3668119474232243501, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
@@ -1123,12 +1096,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 3611cc2c39bb2574bad52e7782584e27,
+      objectReference: {fileID: 5022602860645237092, guid: 1ac217cb46c20084fa850e45abe124d1,
         type: 3}
     - target: {fileID: 8243245909436134675, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_BehaviorType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 548461d296eb4f845a3e1d675fb2f2db, type: 3}
@@ -1143,6 +1116,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GroundPlane
+      objectReference: {fileID: 0}
+    - target: {fileID: 3586125849179291860, guid: 045d9257417ae664090f1496801e8d8f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3586125849179291863, guid: 045d9257417ae664090f1496801e8d8f,
         type: 3}

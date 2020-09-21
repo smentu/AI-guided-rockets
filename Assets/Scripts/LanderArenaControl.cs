@@ -2,11 +2,14 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.MLAgents;
 
 public class LanderArenaControl : MonoBehaviour
 {
     // arena contents
     public GameObject platform;
+    public GameObject targetVolume;
+    public bool training = true;
 
     public GameObject title;
     public GameObject infoBG;
@@ -51,7 +54,19 @@ public class LanderArenaControl : MonoBehaviour
         playerAgent = player.GetComponent<RocketAgent>();
         //followCamera.GetComponent<fixed_follow_camera>().player = player.transform;
 
-        platform.name = "platform" + Random.Range(10, 99);
+        if (training)
+        {
+            platform.SetActive(false);
+            targetVolume.SetActive(true);
+            targetVolume.name = "target" + Random.Range(10, 99);
+        }
+        else
+        {
+            platform.SetActive(true);
+            targetVolume.SetActive(false);
+            platform.name = "platform" + Random.Range(10, 99);
+        }
+
     }
 
     // Start is called before the first frame update
@@ -150,6 +165,11 @@ public class LanderArenaControl : MonoBehaviour
 
     public void Reset()
     {
+        if (training)
+        {
+            float target_size = Academy.Instance.EnvironmentParameters.GetWithDefault("target_size", 50.0f);
+            targetVolume.transform.localScale = new Vector3(target_size, target_size, target_size);
+        }
 
         playerAgent.ResetEffects();
 
