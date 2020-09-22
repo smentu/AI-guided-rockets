@@ -481,7 +481,7 @@ public class LanderAgent : RocketAgent
                 //Invoke("KillMomentum", 10);
                 if (resetOnTouchdown == true)
                 {
-                    StartCoroutine(TouchdDownCountdown(5));
+                    StartCoroutine(TouchdDownCountdown(8));
                 }
             }
         }

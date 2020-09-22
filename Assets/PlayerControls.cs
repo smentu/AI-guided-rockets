@@ -73,6 +73,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""SwitchCamera"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b49db8d-8fef-4381-b217-ed68dbddb79a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -152,6 +160,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""FinToggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e9c88f2-c950-493f-9a2d-57858d899801"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -167,6 +186,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Gameplay_LegsToggle = m_Gameplay.FindAction("LegsToggle", throwIfNotFound: true);
         m_Gameplay_ResetSimulation = m_Gameplay.FindAction("ResetSimulation", throwIfNotFound: true);
         m_Gameplay_FinToggle = m_Gameplay.FindAction("FinToggle", throwIfNotFound: true);
+        m_Gameplay_SwitchCamera = m_Gameplay.FindAction("SwitchCamera", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -223,6 +243,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Gameplay_LegsToggle;
     private readonly InputAction m_Gameplay_ResetSimulation;
     private readonly InputAction m_Gameplay_FinToggle;
+    private readonly InputAction m_Gameplay_SwitchCamera;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -234,6 +255,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @LegsToggle => m_Wrapper.m_Gameplay_LegsToggle;
         public InputAction @ResetSimulation => m_Wrapper.m_Gameplay_ResetSimulation;
         public InputAction @FinToggle => m_Wrapper.m_Gameplay_FinToggle;
+        public InputAction @SwitchCamera => m_Wrapper.m_Gameplay_SwitchCamera;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -264,6 +286,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @FinToggle.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnFinToggle;
                 @FinToggle.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnFinToggle;
                 @FinToggle.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnFinToggle;
+                @SwitchCamera.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchCamera;
+                @SwitchCamera.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchCamera;
+                @SwitchCamera.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchCamera;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -289,6 +314,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @FinToggle.started += instance.OnFinToggle;
                 @FinToggle.performed += instance.OnFinToggle;
                 @FinToggle.canceled += instance.OnFinToggle;
+                @SwitchCamera.started += instance.OnSwitchCamera;
+                @SwitchCamera.performed += instance.OnSwitchCamera;
+                @SwitchCamera.canceled += instance.OnSwitchCamera;
             }
         }
     }
@@ -302,5 +330,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnLegsToggle(InputAction.CallbackContext context);
         void OnResetSimulation(InputAction.CallbackContext context);
         void OnFinToggle(InputAction.CallbackContext context);
+        void OnSwitchCamera(InputAction.CallbackContext context);
     }
 }

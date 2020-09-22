@@ -153,6 +153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1746871045857688614}
   - component: {fileID: 1746871045857688615}
+  - component: {fileID: 7390149566416170869}
   m_Layer: 0
   m_Name: LanderArena
   m_TagString: Untagged
@@ -210,6 +211,20 @@ MonoBehaviour:
   randomizeY: 1
   startingHeight: 600
   speedVariance: 10
+--- !u!114 &7390149566416170869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746871045857688612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b6123d6c69a9f488eb2ee9e2d256c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameras:
+  - {fileID: 0}
 --- !u!1 &1768191652153037892
 GameObject:
   m_ObjectHideFlags: 0
