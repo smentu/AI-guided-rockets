@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 33411005}
   m_Layer: 0
   m_Name: IsometricCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -366,7 +366,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &833946825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,13 +470,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 833946824}
-  m_LocalRotation: {x: 0.035061803, y: -0, z: -0, w: 0.9993852}
+  m_LocalRotation: {x: -0.0033399707, y: -0, z: -0, w: 0.99999446}
   m_LocalPosition: {x: 0, y: 15.9, z: -243.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 4.019, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.383, y: 0, z: 0}
 --- !u!1 &876342879
 GameObject:
   m_ObjectHideFlags: 0
@@ -492,11 +492,11 @@ GameObject:
   - component: {fileID: 876342884}
   m_Layer: 0
   m_Name: FollowCamera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &876342880
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1177,6 +1177,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 448390268876718821, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 582605310497556839, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_Volume
@@ -1362,6 +1367,11 @@ PrefabInstance:
       propertyPath: cameras.Array.data[2]
       value: 
       objectReference: {fileID: 33411008}
+    - target: {fileID: 7390149566416170869, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7499561719244160212, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: Mute
@@ -1406,6 +1416,11 @@ PrefabInstance:
     - target: {fileID: 8243245909436134675, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_BehaviorType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9171044025832980963, guid: 548461d296eb4f845a3e1d675fb2f2db,
+        type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

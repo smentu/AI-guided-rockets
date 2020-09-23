@@ -27,11 +27,7 @@ public class LanderArenaControl : MonoBehaviour
     public GameObject ySpeed;
     public GameObject zSpeed;
 
-    //public GameObject playerPrefab;
-    //public GameObject followCamera;
     public GameObject player;
-    //public GameObject coneOrigin;
-    //public AnimationCurve speedLimitCurve;
 
     private RocketAgent playerAgent;
     [Tooltip("Whether to randomize y rotation")]
@@ -52,7 +48,6 @@ public class LanderArenaControl : MonoBehaviour
         controls.Gameplay.ResetSimulation.performed += ctx => playerAgent.EndEpisode();
 
         playerAgent = player.GetComponent<RocketAgent>();
-        //followCamera.GetComponent<fixed_follow_camera>().player = player.transform;
 
         if (training)
         {
@@ -72,18 +67,17 @@ public class LanderArenaControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Reset();
     }
 
     // Update is called once per frame
     void Update()
     {
+        // if info canvas is set up, update all the readings
         if (rewardNumber)
         {
             Vector3 playerPosition = player.transform.position;
             Vector3 playeVelocity = player.GetComponent<Rigidbody>().velocity;
 
-            //float currentReward = ((originalDistance - distanceToTarget()) / originalDistance);
             float currentReward = playerAgent.GetCumulativeReward();
             rewardNumber.GetComponent<TextMeshProUGUI>().text = currentReward.ToString("0.0");
 
@@ -112,26 +106,7 @@ public class LanderArenaControl : MonoBehaviour
 
     IEnumerator SetNewVelocityTwice(Vector3 newV)
     {
-        //float yRotation = Random.Range(0, 364);
-        //for (float i = 1; i <= 2; i += 1)
-        //{
-        //    player.transform.up = -newV.normalized;
-        //    if (randomizeY == true)
-        //    {
-        //        player.transform.Rotate(0, yRotation, 0, Space.Self);
-        //    }
-
-        //    foreach (Rigidbody rb in gameObject.GetComponentsInChildren<Rigidbody>())
-        //    {
-        //        rb.angularVelocity = Vector3.zero;
-        //        rb.velocity = newV;
-        //    }
-
-        //    //Debug.Log("reset n:o " + i);
-        //    yield return null;
-        //}
-
-        // zero all movement
+        // to avoid physics glitches we turn physics off for 0.1 seconds before setting new velocity
         Rigidbody rb = player.GetComponent<Rigidbody>();
         rb.isKinematic = true;
 
@@ -146,8 +121,6 @@ public class LanderArenaControl : MonoBehaviour
 
         // wait for 0.1 seconds
         float startTime = Time.time;
-        //for (float i = 1; i <= 10; i += 1)
-        //    yield return null;
         while (Time.time < startTime + 0.1f)
         {
             yield return null;
@@ -173,35 +146,24 @@ public class LanderArenaControl : MonoBehaviour
 
         playerAgent.ResetEffects();
 
-        //float resetHeight = 400;
-
         float xOffset = Random.Range(-0.15f * startingHeight, 0.15f * startingHeight);
         float yOffset = Random.Range(-0.15f * startingHeight, 0.15f * startingHeight);
 
         float xDisturbance = 1 + Random.Range(-speedVariance, speedVariance);
         float yDisturbance = 1 + Random.Range(-speedVariance, speedVariance);
 
-        //player = Instantiate(playerPrefab, new Vector3(xOffset, 3000, yOffset), Quaternion.identity, transform);
         player.transform.position = new Vector3(xOffset, startingHeight, yOffset) + platform.transform.position;
 
         Vector3 newVelocity = new Vector3(- 0.2f * xOffset + xDisturbance,
             -startingHeight / 8,
             -0.2f * yOffset + yDisturbance);
 
-        //player.transform.position = new Vector3(0, 100, 0);
-        //Vector3 newVelocity = new Vector3(0, -50, 0);
-
-        //player.transform.up = -newVelocity.normalized;
-        //
-        //foreach (Rigidbody rb in gameObject.GetComponentsInChildren<Rigidbody>())
-        //{
-        //    rb.angularVelocity = Vector3.zero;
-        //    rb.velocity = newVelocity;
-        //}
+        // set velocity
         StartCoroutine(SetNewVelocityTwice(newVelocity));
 
         playerAgent.Refuel();
 
+        // change title and color of info canvas depending on control type
         if (title)
         {
             if (player.GetComponent<RocketAgent>().IsUsingAI())
