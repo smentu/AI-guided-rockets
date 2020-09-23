@@ -39,6 +39,8 @@ public class LanderArenaControl : MonoBehaviour
     public float startingHeight = 400f;
     public float speedVariance = 3f;
 
+    private float target_size;
+
     PlayerControls controls;
 
     private void Awake()
@@ -140,7 +142,7 @@ public class LanderArenaControl : MonoBehaviour
     {
         if (training)
         {
-            float target_size = Academy.Instance.EnvironmentParameters.GetWithDefault("target_size", 50.0f);
+            target_size = Academy.Instance.EnvironmentParameters.GetWithDefault("target_size", 50.0f);
             targetVolume.transform.localScale = new Vector3(target_size, target_size, target_size);
         }
 
@@ -186,5 +188,10 @@ public class LanderArenaControl : MonoBehaviour
     private void OnDisable()
     {
         controls.Gameplay.Disable();
+    }
+
+    public float getTargetRadius()
+    {
+        return target_size / 2.0f;
     }
 }

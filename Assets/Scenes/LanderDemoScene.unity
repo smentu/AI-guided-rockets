@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496f8209d520a164eb1bc971280a136b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fovConstant: 3000
+  fovConstant: 5000
   target: {fileID: 1400676783}
 --- !u!114 &33411006
 MonoBehaviour:
@@ -1180,7 +1180,7 @@ PrefabInstance:
     - target: {fileID: 448390268876718821, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 582605310497556839, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
@@ -1327,11 +1327,6 @@ PrefabInstance:
       propertyPath: training
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1746871045857688615, guid: 548461d296eb4f845a3e1d675fb2f2db,
-        type: 3}
-      propertyPath: speedVariance
-      value: 7
-      objectReference: {fileID: 0}
     - target: {fileID: 3668119474232243501, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}
       propertyPath: m_Name
@@ -1411,7 +1406,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: f8c156f6f97d34a41a2f6a517e165a95,
+      objectReference: {fileID: 5022602860645237092, guid: 7bad9eacf49bd1a4ba1b2b0623265761,
         type: 3}
     - target: {fileID: 8243245909436134675, guid: 548461d296eb4f845a3e1d675fb2f2db,
         type: 3}

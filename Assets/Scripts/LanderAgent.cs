@@ -79,8 +79,8 @@ public class LanderAgent : RocketAgent
         }
         else
         {
-            // else try to place the center of the rocket 12 meters above the landing pad
-            target = arena.platform.transform.position + new Vector3(0, 12, 0);
+            // else try to place the center of the rocket 13 meters above the landing pad
+            target = arena.platform.transform.position + new Vector3(0, 13, 0);
         }
 
         // collect and categorize legs and grid fins
@@ -210,9 +210,8 @@ public class LanderAgent : RocketAgent
             }
         }
 
-
-            // turn motor
-            thrustPoint.transform.localRotation = Quaternion.Euler(-inputY * maxEngineAngle, 0, inputX * maxEngineAngle);
+        // turn motor
+        thrustPoint.transform.localRotation = Quaternion.Euler(-inputY * maxEngineAngle, 0, inputX * maxEngineAngle);
         // turn grid fins
         foreach (GameObject fin in gridFins)
         {
@@ -252,40 +251,6 @@ public class LanderAgent : RocketAgent
             }
         }
 
-        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
-        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
-        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
-        
-
-        // reward based on distance to target
-        float distanceReward = ComputeDistanceReward();
-
-        AddReward(distanceReward - previousDistanceReward);
-        previousDistanceReward = distanceReward;
-
-        int legsOnGround = 0;
-        foreach (GameObject leg in legs)
-        {
-            if (leg.GetComponent<LegSensor>().OnPad()) // || leg.GetComponent<LegSensor>().OnGround())
-            {
-                legsOnGround += 1;
-            }
-        }
-
-
-        AddReward((legsOnGround - nLegsTouching) * 5);
-        nLegsTouching = legsOnGround;
-
-        if (insideTargetVolume)
-        {
-            //Debug.Log("inside target volume");
-            AddReward(5f * Time.deltaTime);
-        }
-
-        // punish going below ground plane during training
-        AddReward(-Mathf.Log10(Mathf.Max(0, -transform.position.y) + 1) * Time.deltaTime);
-
-
         // compute and apply thrust force
         thrust = thrustCurve.Evaluate(thrustInput);
 
@@ -307,6 +272,10 @@ public class LanderAgent : RocketAgent
             SetEffects(0.0f);
         }
 
+        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
+        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
+        // REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS REWARDS 
+
         // reset if the rocket turns sideways
         if (Vector3.Angle(transform.up, Vector3.up) > 100 && touchDown == false)
         {
@@ -314,6 +283,36 @@ public class LanderAgent : RocketAgent
             AddReward(-20);
             EndEpisode();
         }
+
+        // reward based on distance to target
+        float distanceReward = ComputeDistanceReward();
+
+        AddReward(distanceReward - previousDistanceReward);
+        previousDistanceReward = distanceReward;
+
+        int legsOnGround = 0;
+        foreach (GameObject leg in legs)
+        {
+            if (leg.GetComponent<LegSensor>().OnPad()) // || leg.GetComponent<LegSensor>().OnGround())
+            {
+                legsOnGround += 1;
+            }
+        }
+
+
+        AddReward((legsOnGround - nLegsTouching) * 5);
+        nLegsTouching = legsOnGround;
+
+        //if (insideTargetVolume)
+        if ((transform.position - target).magnitude < arena.GetComponent<LanderArenaControl>().getTargetRadius())
+        {
+            //Debug.Log("inside target volume");
+            AddReward(5f * Time.deltaTime);
+        }
+
+        // punish going below ground plane during training
+        AddReward(-Mathf.Log10(Mathf.Max(0, -transform.position.y) + 1) * Time.deltaTime);
+
     }
 
     public override void Heuristic(float[] actionsOut)
@@ -393,7 +392,7 @@ public class LanderAgent : RocketAgent
         // entering the target volume
         if (other.name == arena.targetVolume.name)
         {
-            Debug.Log("Entered " + arena.targetVolume.name);
+            //Debug.Log("Entered " + arena.targetVolume.name);
             insideTargetVolume = true;
         }
     }
@@ -403,7 +402,7 @@ public class LanderAgent : RocketAgent
         // exiting the target volume
         if (other.name == arena.targetVolume.name)
         {
-            Debug.Log("Exited " + arena.targetVolume.name);
+            //Debug.Log("Exited " + arena.targetVolume.name);
             insideTargetVolume = false;
         }
     }
