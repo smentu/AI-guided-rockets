@@ -1,7 +1,9 @@
 # Training Rockets to Fly Using Reinforcement Learning
-The project aims to teach a virtual rocket how to land itself like the SpaceX Falcon 9. Both the rocket simulation and machine learning is done using Unity. The project contains two scenarios: a rocket that tries to hit a target above the launch pad, and a Falcon 9 style lander that attempts to land softly on a small platform below. You can see a video of the lander by clicking on the image below.
+The project aims to teach a virtual rocket how to land itself like the SpaceX Falcon 9. Both the rocket simulation and machine learning is done using Unity. The project contains two scenarios: a rocket that tries to hit a target above the launch pad, and a Falcon 9 style lander that attempts to land softly on a small platform below. The gif below shows a successful landing
 
-[![Image showing rocket](https://img.youtube.com/vi/Alwvvs_q3G8/0.jpg)](https://www.youtube.com/watch?v=Alwvvs_q3G8)
+![Alt Text](Media/landing-movie-3.gif)
+
+There are more videos of the projects on my YouTube channel ([link](https://www.youtube.com/user/SanteriMentu/videos)).
 
 ## Installation instructions
 
