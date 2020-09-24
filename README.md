@@ -1,5 +1,5 @@
 # Rockets Learning to Fly
-The aim of the projects was to have a simulated rocket learn to land itself like the SpaceX Falcon 9. Both the rocket simulation and machine learning is done using Unity. The project contains three scenarios: a rocket that tries to hit a target above the launch pad, a rocket that tries to maneuvre itself inside a target volume and stay inside it, and a Falcon 9 style lander that attempts to land softly on a small platform below. In the end I managed to achieve fairly good results using a training scenario that replaces the landing pad with a target volume. The gif below shows a successful landing.
+The aim of the projects was to have a simulated rocket learn to land itself like the SpaceX Falcon 9. Both the rocket simulation and machine learning is done using Unity. The project contains three scenarios: a rocket that tries to hit a target above the launch pad, a rocket that tries to manoeuvre itself inside a target volume and stay inside it, and a Falcon 9 style lander that attempts to land softly on a small platform below. In the end I managed to achieve fairly good results using a training scenario that replaces the landing pad with a target volume. The gif below shows a successful landing.
 
 ![Alt Text](Media/landing-movie-3.gif)
 
