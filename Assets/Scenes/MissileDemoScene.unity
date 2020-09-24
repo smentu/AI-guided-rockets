@@ -545,6 +545,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5022602860645237092, guid: 5cf95e531196d3f4ca1e13c381613c81,
         type: 3}
+    - target: {fileID: 8537211591711353498, guid: 959da717dd8cabe4b9a18b52387e449b,
+        type: 3}
+      propertyPath: m_BehaviorType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8687310763850847867, guid: 959da717dd8cabe4b9a18b52387e449b,
         type: 3}
       propertyPath: EmissionModule.enabled

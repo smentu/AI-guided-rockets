@@ -1,0 +1,109 @@
+behaviors:
+  LanderLearning:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 2048
+      buffer_size: 20480
+      learning_rate: 0.001
+      beta: 0.01
+      epsilon: 0.3
+      lambd: 0.95
+      num_epoch: 3
+      learning_rate_schedule: linear
+    network_settings:
+      normalize: true
+      hidden_units: 128
+      num_layers: 3
+      vis_encode_type: simple
+      memory: null
+    reward_signals:
+      extrinsic:
+        gamma: 0.995
+        strength: 1.0
+    init_path: null
+    keep_checkpoints: 5
+    checkpoint_interval: 500000
+    max_steps: 10000000
+    time_horizon: 64
+    summary_freq: 50000
+    threaded: true
+    self_play: null
+    behavioral_cloning:
+      demo_path: C:\Users\sante\repos\unity_robot_rockets\Assets\ML-Agents\Examples\Lander\Demos\demo01.demo
+      steps: 200000
+      strength: 0.5
+      samples_per_update: 0
+      num_epoch: 3
+      batch_size: 2048
+env_settings:
+  env_path: null
+  env_args: null
+  base_port: 5005
+  num_envs: 1
+  seed: -1
+engine_settings:
+  width: 84
+  height: 84
+  quality_level: 5
+  time_scale: 20
+  target_frame_rate: -1
+  capture_frame_rate: 60
+  no_graphics: false
+environment_parameters:
+  target_size:
+    curriculum:
+    - value:
+        sampler_type: constant
+        sampler_parameters:
+          seed: 4226
+          value: 100.0
+      name: LessonOne
+      completion_criteria:
+        measure: reward
+        behavior: LanderLearning
+        min_lesson_length: 50
+        signal_smoothing: true
+        threshold: 20.0
+        require_reset: false
+    - value:
+        sampler_type: constant
+        sampler_parameters:
+          seed: 4227
+          value: 50.0
+      name: LessonTwo
+      completion_criteria:
+        measure: reward
+        behavior: LanderLearning
+        min_lesson_length: 50
+        signal_smoothing: true
+        threshold: 30.0
+        require_reset: false
+    - value:
+        sampler_type: constant
+        sampler_parameters:
+          seed: 4228
+          value: 25.0
+      name: LessonThree
+      completion_criteria:
+        measure: reward
+        behavior: LanderLearning
+        min_lesson_length: 50
+        signal_smoothing: true
+        threshold: 50.0
+        require_reset: false
+    - value:
+        sampler_type: constant
+        sampler_parameters:
+          seed: 4229
+          value: 15.0
+      name: MyLastLesson
+      completion_criteria: null
+checkpoint_settings:
+  run_id: volume_lander_05
+  initialize_from: null
+  load_model: false
+  resume: false
+  force: false
+  train_model: false
+  inference: false
+debug: false

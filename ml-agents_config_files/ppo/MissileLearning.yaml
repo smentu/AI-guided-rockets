@@ -1,0 +1,39 @@
+behaviors:
+  MissileLearning:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 2048 #1024
+      buffer_size: 20480
+      learning_rate: 3.0e-3
+      beta: 5.0e-3
+      epsilon: 0.1
+      lambd: 0.95
+      num_epoch: 6
+      learning_rate_schedule: linear
+    network_settings:
+      normalize: false
+      hidden_units: 16
+      num_layers: 3
+      vis_encode_type: simple
+    reward_signals:
+      extrinsic:
+        gamma: 0.9
+        strength: 1.0
+    keep_checkpoints: 5
+    max_steps: 2.0e6
+    time_horizon: 128
+    summary_freq: 60000
+    threaded: true
+
+environment_parameters:
+  target_height:
+    curriculum:
+      - name: LessonOne
+        completion_criteria:
+          measure: reward
+          behavior: MissileLearning
+          min_lesson_length: 50
+          threshold: 35
+        value: 80.0
+      - name: MyLastLesson
+        value: 60.0

@@ -1,0 +1,63 @@
+behaviors: 
+  LanderLearning: 
+    behavioral_cloning:
+      demo_path: C:\Users\sante\repos\unity_robot_rockets\Assets\ML-Agents\Examples\Lander\Demos\demo01.demo
+      steps: 200000
+      strength: 0.5
+      samples_per_update: 0
+      num_epoch: 3
+      batch_size: 2048
+    hyperparameters: 
+      batch_size: 2048
+      beta: 1e-2
+      buffer_size: 20480
+      epsilon: 0.3
+      lambd: 0.95
+      learning_rate: 0.001
+      learning_rate_schedule: linear
+      num_epoch: 3
+    keep_checkpoints: 5
+    max_steps: 10e6
+    network_settings: 
+      hidden_units: 128
+      normalize: true
+      num_layers: 3
+      vis_encode_type: simple
+    reward_signals: 
+      extrinsic: 
+        gamma: 0.995
+        strength: 1.0
+    summary_freq: 50000
+    threaded: true
+    time_horizon: 64
+    trainer_type: ppo
+environment_parameters: 
+  target_size: 
+    curriculum: 
+      - 
+        completion_criteria: 
+          behavior: LanderLearning
+          measure: reward
+          min_lesson_length: 50
+          threshold: 20
+        name: LessonOne
+        value: 100.0
+      - 
+        completion_criteria: 
+          behavior: LanderLearning
+          measure: reward
+          min_lesson_length: 50
+          threshold: 30
+        name: LessonTwo
+        value: 50.0
+      - 
+        completion_criteria: 
+          behavior: LanderLearning
+          measure: reward
+          min_lesson_length: 50
+          threshold: 50
+        name: LessonThree
+        value: 25.0
+      - 
+        name: MyLastLesson
+        value: 15.0

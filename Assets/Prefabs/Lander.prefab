@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 4945346120843426003}
   - component: {fileID: 3876472688138169359}
   - component: {fileID: 7663936409514855480}
-  - component: {fileID: 3073714663877120988}
+  - component: {fileID: 3038846161459935047}
   m_Layer: 10
   m_Name: Lander
   m_TagString: Untagged
@@ -376,7 +376,7 @@ MonoBehaviour:
   TeamId: 0
   m_UseChildSensors: 0
   m_ObservableAttributeHandling: 0
---- !u!114 &3073714663877120988
+--- !u!114 &3038846161459935047
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -391,62 +391,45 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 3000
+  MaxStep: 1600
   maxFuel: 100
-  maxEngineAngle: 15
-  maxGridFinAngle: 15
-  thrustPoint: {fileID: 5687149481991879406}
-  resetOnTouchdown: 1
-  fuelMass: 80
-  dryMass: 20
-  thrustForce: 1500
-  startingFuel: 0.2
+  maxEngineAngle: 10
+  maxGridFinAngle: 10
   thrustCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: -0.035281897
-      outSlope: -0.035281897
+      inSlope: 1
+      outSlope: 1
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.15001032
-      value: -0.0052926484
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.15401326
-      value: 0.5246829
-      inSlope: 0.631664
-      outSlope: 0.631664
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.9958669
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0.62045455
-      outSlope: 0.62045455
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 1
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  rocketEngineSound: {fileID: 0}
-  rocketEngineShutoffSound: {fileID: 0}
-  bodyBonk: {fileID: 0}
-  showEffects: 0
+  resetOnTouchdown: 1
+  consumeFuel: 0
+  fuelMass: 80
+  dryMass: 20
+  thrustForce: 1400
+  startingFuel: 0.2
+  showEffects: 1
+  thrustPoint: {fileID: 5687149481991879406}
+  rocketEngineSound: {fileID: 1150497188392383318}
+  rocketEngineShutoffSound: {fileID: 1165294878876741708}
+  bodyBonk: {fileID: 5766622847410960778}
   arena: {fileID: 0}
 --- !u!1 &6446350726156133214
 GameObject:

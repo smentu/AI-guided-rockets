@@ -1,0 +1,50 @@
+behaviors:
+  HoverLearning:
+    trainer_type: ppo
+
+    hyperparameters:
+      batch_size: 2048
+      buffer_size: 20480
+      learning_rate: 1.0e-3
+      beta: 1e-2
+      epsilon: 0.3
+      lambd: 0.95
+      num_epoch: 3
+      learning_rate_schedule: linear
+
+    network_settings:
+      normalize: true
+      hidden_units: 128
+      num_layers: 3
+      vis_encode_type: simple
+
+    reward_signals:
+      extrinsic:
+        gamma: 0.995
+        strength: 1.0
+
+    keep_checkpoints: 5
+    max_steps: 10e6
+    time_horizon: 64
+    summary_freq: 50000
+    threaded: true
+
+environment_parameters:
+  target_size:
+    curriculum:
+      - name: LessonOne
+        completion_criteria:
+          measure: reward
+          behavior: HoverLearning
+          min_lesson_length: 50
+          threshold: 20
+        value: 100.0
+      - name: LessonTwo
+        completion_criteria:
+          measure: reward
+          behavior: HoverLearning
+          min_lesson_length: 50
+          threshold: 25
+        value: 50.0
+      - name: MyLastLesson
+        value: 25.0

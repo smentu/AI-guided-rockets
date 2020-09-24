@@ -10,7 +10,6 @@ public class MissileAgent : RocketAgent
     [Tooltip("How much the engine can vector away from zero")]
     public float maxEngineAngle=20f;
     public GameObject target;
-    PlayerControls controls;
 
     public GameObject thrustPoint;
     private ParticleSystem.EmissionModule em;
@@ -29,12 +28,14 @@ public class MissileAgent : RocketAgent
     private float previousDistance;
     private float originalDistance;
 
+    private Vector2 Move;
     private float engineX;
     private float engineY;
     private bool firing = false;
-
-    private Vector2 Move;
+    private bool usingAI;
     // private float playerFiring;
+
+    PlayerControls controls;
 
     public override Vector2 GetXYInputs()
     {
@@ -67,15 +68,26 @@ public class MissileAgent : RocketAgent
 
     private void Awake()
     {
-        em = GetComponentInChildren<ParticleSystem>().emission;
-
         controls = new PlayerControls();
+        controls.Gameplay.Enable();
+
+        em = GetComponentInChildren<ParticleSystem>().emission;
 
         // define player input callbacks
         controls.Gameplay.ThrustDirection.performed += ctx => Move = ctx.ReadValue<Vector2>();
+        controls.Gameplay.ResetSimulation.performed += ctx => ToggleAI();
 
         controls.Gameplay.ThrustDirection.canceled += ctx => Move = Vector2.zero;
         //controls.Gameplay.FireEngine.canceled += ctx => playerFiring = 0f;
+
+        if (GetComponent<BehaviorParameters>().BehaviorType == BehaviorType.HeuristicOnly)
+        {
+            usingAI = false;
+        }
+        else
+        {
+            usingAI = true;
+        }
     }
 
     void FixedUpdate()
@@ -125,8 +137,6 @@ public class MissileAgent : RocketAgent
 
     public override void Heuristic(float[] actionsOut)
     {
-        controls.Gameplay.Enable();
-
         actionsOut[0] = Move.x;
         actionsOut[1] = Move.y;
     }
@@ -172,6 +182,22 @@ public class MissileAgent : RocketAgent
 
         sensor.AddObservation(upVector);
         sensor.AddObservation(velocityVector);
+    }
+
+    private void ToggleAI()
+    {
+        if (usingAI)
+        {
+            GetComponent<BehaviorParameters>().BehaviorType = BehaviorType.HeuristicOnly;
+            usingAI = false;
+            EndEpisode();
+        }
+        else
+        {
+            GetComponent<BehaviorParameters>().BehaviorType = BehaviorType.InferenceOnly;
+            usingAI = true;
+            EndEpisode();
+        }
     }
 
     public override bool IsUsingAI()

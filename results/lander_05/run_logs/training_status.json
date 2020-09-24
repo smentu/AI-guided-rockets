@@ -1,0 +1,50 @@
+{
+    "target_size": {
+        "lesson_num": 3
+    },
+    "LanderLearning": {
+        "checkpoints": [
+            {
+                "steps": 8499960,
+                "file_path": "results\\volume_lander_05\\LanderLearning\\LanderLearning-8499960.nn",
+                "reward": -53.97104787826538,
+                "creation_time": 1600876654.8344157
+            },
+            {
+                "steps": 8999992,
+                "file_path": "results\\volume_lander_05\\LanderLearning\\LanderLearning-8999992.nn",
+                "reward": 87.10966883464293,
+                "creation_time": 1600877027.834429
+            },
+            {
+                "steps": 9499992,
+                "file_path": "results\\volume_lander_05\\LanderLearning\\LanderLearning-9499992.nn",
+                "reward": 109.10054747462273,
+                "creation_time": 1600877401.6553106
+            },
+            {
+                "steps": 9999992,
+                "file_path": "results\\volume_lander_05\\LanderLearning\\LanderLearning-9999992.nn",
+                "reward": 109.77421867847443,
+                "creation_time": 1600877778.4560564
+            },
+            {
+                "steps": 10000056,
+                "file_path": "results\\volume_lander_05\\LanderLearning\\LanderLearning-10000056.nn",
+                "reward": 109.77421867847443,
+                "creation_time": 1600877779.3739498
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 10000056,
+            "file_path": "results\\volume_lander_05\\LanderLearning.nn",
+            "reward": 109.77421867847443,
+            "creation_time": 1600877779.3739498
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.1.0",
+        "mlagents_version": "0.19.0",
+        "tensorflow_version": "2.3.0"
+    }
+}
