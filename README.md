@@ -22,6 +22,7 @@ In order to get project running in Unity and to be able to train models you need
 1. Clone this repository
 1. Copy the folder "ml-agents" from the Assets directory of the Unity ml-agents repo into the Assets directory of the AI-guided-rockets repo.
 
+## How to train a model
 In order to train a model do the following:
 1. Open any of the three training scenarios in Unity
 1. In the command prompt activate the Python environment with mlagents and the other required packages
