@@ -432,21 +432,6 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.z
       value: -0.06834686
       objectReference: {fileID: 0}
-    - target: {fileID: 5766622847410960778, guid: 0aab27a7fca8e774eaac7d85540bd865,
-        type: 3}
-      propertyPath: MaxDistance
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5766622847410960778, guid: 0aab27a7fca8e774eaac7d85540bd865,
-        type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: a058fbb40d417394fa8fa0b0d5d3247b, type: 3}
-    - target: {fileID: 5766622847410960778, guid: 0aab27a7fca8e774eaac7d85540bd865,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6364251436674674826, guid: 0aab27a7fca8e774eaac7d85540bd865,
         type: 3}
       propertyPath: m_Name

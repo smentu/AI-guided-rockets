@@ -31,16 +31,19 @@ public class LanderAgent : RocketAgent
     [Header("Component game objects")]
     [Tooltip("Whether to produce rocket effects")]
     public bool showEffects = false;        // whether to produce rocket effects
+    public GameObject ExplosionPrefab;
     [Tooltip("Where the thrust force is applied")]
     public GameObject thrustPoint;          // empty game object on which thrust is applied
     public AudioSource rocketEngineSound;
     public AudioSource rocketEngineShutoffSound;
     public AudioSource bodyBonk;
+    public AudioSource explosionSound;
 
     // lander state variables
     private Vector3 target;                 // the target position for the center of the rocket
     private float currentFuel;              // keep track of how much fuel is in the tank
     private bool touchDown;                 // whether the rocket has touched the ground
+    private bool exploded;                  // whether the rocket has exploded
     private float previousPitch;            // temp variable for computing change in pitch
     private float previousRoll;             // temp variable for computing change in roll
     private Vector3 previousTargetVector;   // temp variable for computing change in target direction
@@ -51,7 +54,7 @@ public class LanderAgent : RocketAgent
     private bool legsDeployed = false;      // whether legs are stowed or deployed
     private int nLegsTouching;              // keep track of how many legs are currently in contact with ground
     private bool usingAI;                   // whether control is manual or AI
-    private bool insideTargetVolume = false;  // whether the rocket is intersecting with the target volume during training
+    //private bool insideTargetVolume = false;  // whether the rocket is intersecting with the target volume during training
     //private bool gridFinsDeployed = false;
 
     // lander child components
@@ -153,6 +156,7 @@ public class LanderAgent : RocketAgent
 
         // initialize temp variables
         touchDown = false;
+        exploded = false;
         previousTargetVector = computeTargetVector();
         previousDistanceReward = ComputeDistanceReward();
         previousPitch = -Mathf.Asin(transform.InverseTransformDirection(Vector3.up).z);
@@ -375,6 +379,12 @@ public class LanderAgent : RocketAgent
                 float touchDownReward = Mathf.Max(40 - collisionVelocity, 0) / 2;
                 AddReward(touchDownReward);
 
+                if (collisionVelocity > 12.0f && showEffects && !exploded)
+                {
+                    exploded = true;
+                    Explode();
+                }
+
                 //Debug.Log("touchdown reward: " + reward);
                 Debug.Log("touchdown speed: " + collisionVelocity + ", reward: " + touchDownReward);
 
@@ -387,25 +397,25 @@ public class LanderAgent : RocketAgent
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        // entering the target volume
-        if (other.name == arena.targetVolume.name)
-        {
-            //Debug.Log("Entered " + arena.targetVolume.name);
-            insideTargetVolume = true;
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    // entering the target volume
+    //    if (other.name == arena.targetVolume.name)
+    //    {
+    //        //Debug.Log("Entered " + arena.targetVolume.name);
+    //        insideTargetVolume = true;
+    //    }
+    //}
 
-    private void OnTriggerExit(Collider other)
-    {
-        // exiting the target volume
-        if (other.name == arena.targetVolume.name)
-        {
-            //Debug.Log("Exited " + arena.targetVolume.name);
-            insideTargetVolume = false;
-        }
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    // exiting the target volume
+    //    if (other.name == arena.targetVolume.name)
+    //    {
+    //        //Debug.Log("Exited " + arena.targetVolume.name);
+    //        insideTargetVolume = false;
+    //    }
+    //}
 
     private float ComputeDistanceReward()
     {
@@ -557,6 +567,22 @@ public class LanderAgent : RocketAgent
         // play funny sound when rocket body hits the ground
         bodyBonk.volume = Mathf.Min(1, collision.relativeVelocity.magnitude / 40f);
         bodyBonk.Play();
+
+        if (showEffects && !exploded)
+        {
+            exploded = true;
+
+            Explode();
+        }
+    }
+
+    private void Explode()
+    {
+        explosionSound.Play();
+
+        GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        //explosion.GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity / 2 + Vector3.up * 5;
+        explosion.GetComponent<Rigidbody>().velocity = Vector3.up * 5;
     }
 
     public static IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
